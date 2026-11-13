@@ -82,7 +82,7 @@ const SP={
  moonjelly:{n:'Moon Jellyfish',e:'🌕',z:'Open Water',f:'Sea turtles love to eat jellyfish. A floating plastic bag looks just like one - a good reason to pick up trash.'},
  manowar:{n:'Portuguese Man o\' War',e:'🎈',z:'Open Water',f:'Not one jellyfish but a colony of tiny animals working together. Its gas-filled float is a sail, and its stinging tentacles can trail 30 feet or more.'},
  deer:{n:'Key Deer',e:'🦌',z:'Islands',f:'The smallest deer in North America - about the size of a big dog. It lives only in the Florida Keys and is endangered.'},
- gull:{n:'Laughing Gull',e:'🕊️',z:'Islands',f:'Named for its "ha-ha-ha" call. It follows boats hoping for scraps, and will even land on a pelican\'s head to steal fish out of its pouch.'},
+ gull:{n:'Laughing Gull',e:'🕊️',z:'Islands',f:'Named for its "ha-ha-ha" call. It will even land on a pelican\'s head to steal fish out of its pouch.'},
  pelican:{n:'Brown Pelican',e:'🐦',z:'Islands',f:'It plunge-dives from the air to scoop up fish. It nearly vanished because of the pesticide DDT and bounced back after DDT was banned.'},
  frigate:{n:'Magnificent Frigatebird',e:'🪁',z:'Islands',f:'Its wings span over 7 feet, but its feathers are not waterproof, so it never lands on the sea. It snatches fish from the surface - or steals them from other birds.'},
  heron:{n:'Great White Heron',e:'🪶',z:'Islands',f:'An all-white form of the great blue heron found almost only in South Florida and the Keys.'},
@@ -501,8 +501,7 @@ function newGame(){
  put('deer','deer',10,(t,x,y)=>t===T.HAM&&nearType(x,y,T.SAND));
  put('croc','croc',5,(t,x,y)=>t===T.SHAL&&nearType(x,y,T.MANG)&&y>3);
  for(let f=0;f<3;f++){const lx=R()*WW,ly=R()*WH,la=R()*TAU;for(let i=0;i<5;i++)G.ents.push({kind:'pelican',sp:'pelican',x:lx,y:ly,a:la,ph:f*3+i*.5,lead:i?G.ents.length-i:-1,slot:i})} // pelicans fly in V formations
- for(let i=0;i<9;i++)G.ents.push({kind:'gull',sp:'gull',x:st.x,y:st.y,a:R()*TAU,ph:R()*9,h:60+R()*60,rad:50+R()*110,ship:1});
- for(let i=0;i<14;i++)G.ents.push({kind:'gull',sp:'gull',x:R()*WW,y:R()*WH,a:R()*TAU,ph:R()*9,h:45+R()*50});
+ for(let i=0;i<20;i++)G.ents.push({kind:'gull',sp:'gull',x:R()*WW,y:R()*WH,a:R()*TAU,ph:R()*9,h:45+R()*50});
  for(let i=0;i<5;i++)G.ents.push({kind:'frigate',sp:'frigate',x:R()*WW,y:R()*WH,a:R()*TAU,ph:R()*9});
  const m=SITES[0];G.ents.push({kind:'croc',sp:'croc',x:m.x+70,y:m.y-40,x0:m.x+70,y0:m.y-40,ph:1,a:2});
  Object.assign(G,{hp:100,gold:0,sunk:0,reload:0,calm:9,hitT:0,loot:[],balls:[],home:{x:st.x,y:st.y},bossUp:0,bossDead:0});
