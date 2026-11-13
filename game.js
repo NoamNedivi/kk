@@ -66,6 +66,12 @@ const SP={
  loggerhead:{n:'Loggerhead Sea Turtle',e:'🐢',z:'Open Water',f:'Named for its big head and powerful jaws that crack conchs and crabs. Florida beaches are among the most important loggerhead nesting sites in the world.'},
  whaleshark:{n:'Whale Shark',e:'🐋',z:'Open Water',f:'The biggest fish in the sea - as long as a school bus - yet it eats only tiny plankton and fish eggs. It occasionally passes through Florida waters.'},
  flyingfish:{n:'Flying Fish',e:'✈️',z:'Open Water',f:'It bursts out of the water and glides on wing-like fins for hundreds of feet to escape predators such as mahi-mahi.'},
+ urchin:{n:'Long-spined Sea Urchin',e:'✴️',z:'Coral Reef',f:'The lawnmower of the reef: it grazes algae so young coral has room to grow. A mystery disease wiped out most of them across the Caribbean in 1983, and the reefs suffered.'},
+ sailfish:{n:'Atlantic Sailfish',e:'🗡️',z:'Open Water',f:'Florida\'s official saltwater fish and one of the fastest in the sea. It raises its huge sail fin to herd small fish, then slashes through the school with its bill.'},
+ mahi:{n:'Mahi-mahi',e:'🟡',z:'Open Water',f:'A dazzling gold, green and blue hunter that grows amazingly fast - up to four feet long in its first year. It gathers under floating seaweed and wreckage.'},
+ tigershark:{n:'Tiger Shark',e:'🐅',z:'Open Water',f:'Named for the dark stripes on young sharks. It will eat almost anything - its saw-edged teeth can even cut through a sea turtle\'s shell.'},
+ manta:{n:'Giant Manta Ray',e:'🪽',z:'Open Water',f:'The largest ray in the world, with wings that can span over 20 feet, and the biggest brain of any fish. It is a harmless plankton eater.'},
+ remora:{n:'Remora',e:'🧲',z:'Open Water',f:'A hitchhiker with a sucker on top of its head. It rides sharks, rays and turtles and eats their scraps and parasites.'},
  dolphin:{n:'Bottlenose Dolphin',e:'🐬',z:'Open Water',f:'Dolphins in Florida Bay invented "mud-ring feeding": one stirs up a ring of mud and the trapped fish jump right into waiting mouths.'},
  nurse:{n:'Nurse Shark',e:'🦈',z:'Open Water',f:'A calm bottom-dweller that rests by day and slurps up prey like a vacuum at night. Leave it alone and it leaves you alone.'},
  reefshark:{n:'Caribbean Reef Shark',e:'🦈',z:'Open Water',f:'The most common shark on Caribbean reefs. As a top predator it keeps fish populations healthy. Shark bites on people are very rare - but give them space.'},
@@ -79,7 +85,7 @@ const SP={
  pelican:{n:'Brown Pelican',e:'🐦',z:'Islands',f:'It plunge-dives from the air to scoop up fish. It nearly vanished because of the pesticide DDT and bounced back after DDT was banned.'},
  frigate:{n:'Magnificent Frigatebird',e:'🪁',z:'Islands',f:'Its wings span over 7 feet, but its feathers are not waterproof, so it never lands on the sea. It snatches fish from the surface - or steals them from other birds.'},
  heron:{n:'Great White Heron',e:'🪶',z:'Islands',f:'An all-white form of the great blue heron found almost only in South Florida and the Keys.'},
- airboat:{n:'Airboat & Seagrass',e:'🚤',z:'Islands',f:'Your airboat is pushed by a fan above the water, so there is no propeller to cut "prop scars" through the seagrass. Scars can take years to heal.'}
+ airboat:{n:'Sails & Seagrass',e:'⛵',z:'Islands',f:'Your ship is pushed by the wind, so it has no propeller to cut "prop scars" through the seagrass. On motor boats those scars can take years to heal.'}
 };
 const NSP=Object.keys(SP).length;
 
@@ -176,7 +182,7 @@ const SITES=[
   clue:'"Piece the fourth sleeps in the galleon the hurricane swallowed, out in the deep blue to the east."',next:'Head east into deep water and find the shipwreck.'},
  {id:'wreck',name:'Wreck of the Santa Rosalia',eco:'Shipwreck (artificial reef)',icon:'⚓',W:2700,D:720,drain:1.4,c1:'#2587b8',c2:'#052845',floor:'#8f8a72',locked:true,
   intro:'In 1733 a hurricane smashed a Spanish treasure fleet along these reefs. Old wrecks become artificial reefs full of life. The chest is locked - search the stern cabin for a key.',
-  clue:'The four pieces fit together! A big red X marks <b>Blacktide\'s Hole</b>, a deep blue hole off the south-west keys.',next:'Sail to the red X in the far south-west and dive Blacktide\'s Hole.'},
+  clue:'The four pieces fit together! A big red X marks <b>Blacktide\'s Hole</b>, a deep blue hole off the south-west keys.',next:'Sail to the red X in the far south-west, sink the Leviathan that guards it, then dive Blacktide\'s Hole.'},
  {id:'hole',name:'Blacktide\'s Hole',eco:'Blue Hole',icon:'❌',W:2000,D:900,drain:1.25,c1:'#2c8fc4',c2:'#020d20',floor:'#7c8794',
   intro:'A sinkhole in the sea floor, dark and deep. Your air goes faster down here. The treasure should be at the very bottom...'}
 ];
@@ -239,7 +245,8 @@ const MODEL={
   g.add(E('#f1e3d0',1.6,8.2,5.3,6,0,0),E('#f1e3d0',1.6,8.3,5.3,-3,0,0),E('#f1e3d0',1.5,7,5,-10,0,0));return g},
  cuda(){const g=Gp(E('#b9c4cc',56,8,6),C('#b9c4cc',6,26,5,62,0,0,0,0,-PI/2),C('#8a98a3',5,10,1,-10,9,0,0,0,.4)),tail=Gp(C('#8a98a3',12,18,1.5,-8,0,0,0,0,-PI/2));tail.position.x=-52;g.add(tail);
   for(let i=0;i<5;i++)g.add(E('#55626c',2.2,2.2,6.2,-30+i*13,-2,0));eyes(g,44,2,4.6,2.4);g.userData.tail=tail;g.userData.ts=9;return g},
- gshark(c){return sharkM('#6f7f8c','#dfe6ea',c.ham)},
+ gshark(c){const g=sharkM(c.tiger?'#7a8068':'#6f7f8c','#dfe6ea',c.ham);if(c.tiger){for(let i=0;i<9;i++)g.add(E('#3c4234',2.2,9-Math.abs(i-4)*.6,12.3,-44+i*11,5,0));g.scale.setScalar(1.25)}return g},
+ urchin(){const g=Gp(E('#141418',6,5,6));for(let i=0;i<40;i++){const y=(i+.5)/40,r=Math.sqrt(1-y*y),a=i*2.4;g.add(aim(Y('#1c1c22',.35,26,.35,r*Math.cos(a)*13,y*13,r*Math.sin(a)*13),r*Math.cos(a),y,r*Math.sin(a)))}return g},
  shark(){const g=sharkM('#a58c6a','#c9b592');g.scale.set(1,.8,1.1);g.userData.tail=null;return g},
  moray(){const g=Gp(E('#4a4438',24,13,20,-34,-20,0),I('#5a5346',14,10,12,-14,-26,10));const pts=[[-32,-12,8],[-27,-2,7.5],[-18,6,7],[-6,11,7],[7,13,7]];for(const p of pts)g.add(E('#6f9a3a',p[2],p[2],p[2],p[0],p[1],0));
   const head=Gp(E('#6f9a3a',13,7.5,7,6,0,0),E('#3a1a1a',6,2.4,5,13,-3.5,0));eyes(head,9,4,5.5,2);head.position.set(10,13,0);g.add(head);g.userData.anim=(m,c,t)=>{head.rotation.z=Math.sin(t*2)*.18;head.position.y=13+Math.sin(t*2)*2};return g},
@@ -258,10 +265,10 @@ const MODEL={
  manatee(){const g=Gp(E('#8b949a',74,28,30),E('#8b949a',25,19,21,70,-4,0),E('#737c82',11,9,12,89,-10,0),E('#8b949a',9,18,5,34,-24,23,.4,0,.5),E('#8b949a',9,18,5,34,-24,-23,-.4,0,.5));eyes(g,80,4,17,2);
   const tail=Gp(E('#8b949a',27,5,23,-24,0,0));tail.position.x=-66;g.add(tail);g.userData.anim=(m,c,t)=>{tail.rotation.z=Math.sin(t*1.5)*.22};return g},
  ray(){const g=Gp(E('#96876a',27,3,25),Y('#7d6f52',1,36,1,-42,1,0,0,0,PI/2),E('#111111',1.8,1.8,1.8,12,2.6,5),E('#111111',1.8,1.8,1.8,12,2.6,-5));return g},
- eagleray(){const g=Gp(E('#3a3f5a',26,5,13),E('#e8e8f0',22,3,11,1,-2.5,0),E('#3a3f5a',9,5,8,26,0,0),Y('#2a2e44',.9,80,.9,-62,0,0,0,0,PI/2));eyes(g,30,2,7,1.6);
+ eagleray(c){const g=Gp(E('#3a3f5a',26,5,13),E('#e8e8f0',22,3,11,1,-2.5,0),E('#3a3f5a',9,5,8,26,0,0),Y('#2a2e44',.9,80,.9,-62,0,0,0,0,PI/2));eyes(g,30,2,7,1.6);
   const w=[1,-1].map(s=>{const f=Gp(C('#3a3f5a',20,46,2.4,0,0,s*23,s*PI/2));for(let i=0;i<4;i++)f.add(E('#e8e8f0',2,.6,2,-6+i*5,1.6,s*(8+i*6)));f.position.set(0,0,s*8);g.add(f);return f});
   for(let i=0;i<5;i++)g.add(E('#e8e8f0',2,.6,2,-12+i*7,4.6,(i%2?3:-3)));
-  g.userData.anim=(m,c,t)=>{const a=Math.sin(t*2.4)*.55;w[0].rotation.x=-a;w[1].rotation.x=a};return g},
+  if(c&&c.manta){g.scale.setScalar(2.7);g.add(C('#3a3f5a',2.4,9,1.6,31,-1,5,0,0,-PI/2),C('#3a3f5a',2.4,9,1.6,31,-1,-5,0,0,-PI/2))}const fs=c&&c.manta?1.2:2.4;g.userData.anim=(m,c,t)=>{const a=Math.sin(t*fs)*.55;w[0].rotation.x=-a;w[1].rotation.x=a};return g},
  sawfish(){const g=Gp(E('#9a8f6e',58,7,17),E('#d8d0b0',50,4,14,0,-3.5,0),B('#b8ad8c',50,2,7,80,0,0),C('#9a8f6e',8,20,2,-6,13,0,0,0,.5),C('#9a8f6e',6,16,2,-30,11,0,0,0,.5),E('#9a8f6e',16,2,26,18,-1,0));
   for(let i=0;i<9;i++){g.add(C('#e8e0c0',1,5,1,60+i*5,0,5.5,PI/2),C('#e8e0c0',1,5,1,60+i*5,0,-5.5,-PI/2))}
   const tail=Gp(C('#9a8f6e',6,30,2,-11,9,0,0,0,.9),C('#9a8f6e',5,16,2,-6,-5,0,0,0,PI-.9));tail.position.x=-52;g.add(tail);eyes(g,44,5,9,1.8);g.userData.tail=tail;g.userData.ts=3;return g},
@@ -279,7 +286,7 @@ const MODEL={
   g.userData.anim=(m,c,t)=>{m.children.forEach((s,i)=>{s.children[2].rotation.x=Math.sin(t*5+i)*.3})};return g},
  puffer(){const g=Gp(E('#d9c27a',15,14,14),E('#f3ecd0',13,9,12.5,1,-5,0));for(let i=0;i<34;i++){const y=1-2*(i+.5)/34,r=Math.sqrt(1-y*y),a=i*2.4;const s=C('#f3e9c8',1.4,6,1.4,r*Math.cos(a)*15,y*14,r*Math.sin(a)*14);aim(s,r*Math.cos(a),y,r*Math.sin(a));g.add(s)}
   const tail=Gp(C('#b8a25a',5,9,1,-4,0,0,0,0,-PI/2));tail.position.x=-14;g.add(tail);eyes(g,10,4,10.5,3.2);g.userData.tail=tail;return g},
- whaleshark(){const g=sharkM('#4a6078','#dfe6ea');g.add(E('#4a6078',26,11,17,50,0,0));for(let i=0;i<46;i++){const a=i*2.4,x=-50+(i*37%110);g.add(E('#e8f0f4',1.8,1,1.8,x,13.2-Math.abs(Math.sin(a))*4-Math.abs(x)*.03,Math.sin(a)*8))}g.scale.setScalar(3.3);g.userData.ts=1.4;return g},
+ whaleshark(){const g=sharkM('#4a6078','#dfe6ea');g.add(E('#4a6078',26,11,17,50,0,0));for(let i=0;i<46;i++){const a=i*2.4,x=-50+(i*37%110);g.add(E('#e8f0f4',1.8,1,1.8,x,13.2-Math.abs(Math.sin(a))*4-Math.abs(x)*.03,Math.sin(a)*8))}for(let i=0;i<2;i++){const r=fishM(16,4,'#55606a','#3d464e',2.6);r.position.set(10-i*30,-17,i?5:-4);g.add(r)}g.scale.setScalar(3.3);g.userData.ts=1.4;return g},
  trumpet(){const f=Gp(E('#b58a3a',34,3.6,3.6),Y('#b58a3a',1.7,18,1.7,40,0,0,0,0,PI/2),C('#8a6a2a',4,8,1,-37,0,0,0,0,-PI/2),C('#8a6a2a',3,6,1,-24,4,0),C('#8a6a2a',3,6,1,-24,-4,0,PI));eyes(f,30,1,3,1.4);f.rotation.z=-1.15;const g=Gp(f);g.userData.anim=(m,c,t)=>{f.rotation.z=-1.15+Math.sin(t*.9+c.ph)*.12};return g},
  seacucumber(){const g=Gp(E('#5a4630',17,6,7));for(let i=0;i<12;i++)g.add(E('#7a6244',1.8,1.8,1.8,-13+i*2.4,4.6-Math.abs(i-5.5)*.25,(i%3-1)*3.4));for(let i=0;i<5;i++)g.add(C('#c9a878',.9,5,.9,17+Math.cos(i)*1.5,Math.sin(i*1.3)*2,Math.cos(i*2)*2,0,0,-PI/2));return g},
  stonecrab(){const g=Gp(E('#8a5a3a',10,5,8),E('#c9a070',8,3,6.5,0,-2,0));for(const s of[1,-1]){g.add(E('#b5744a',6,4.4,4,10,1,s*8),E('#1c1c1c',3.2,2.4,2.4,15,1,s*8.5));for(let i=0;i<3;i++)g.add(Y('#7a4a2a',.9,9,.9,-4+i*4,-4,s*9,s*.9))}g.add(E('#111111',1,1.4,1,7,5,3),E('#111111',1,1.4,1,7,5,-3));return g},
@@ -313,13 +320,14 @@ const SURF={
  deer(){const g=Gp(E('#a8743f',11,6,5,0,15,0),Y('#a8743f',2.4,10,2.4,10,22,0,0,0,-.6),E('#a8743f',4.8,3.6,3.3,14.5,27,0),E('#3a2a1a',1.3,1.2,1.4,18.6,26.4,0),E('#ffffff',2.2,2.8,2.2,-11,17.5,0),C('#a8743f',1.4,4.5,.8,12.5,31.5,2.6,.4),C('#a8743f',1.4,4.5,.8,12.5,31.5,-2.6,-.4),E('#e8d8b8',9,3,4,0,12,0));
   for(const x of[-7,7])for(const z of[-2.8,2.8])g.add(Y('#8a5c30',1.1,12,1.1,x,6,z));eyes(g,15.6,28,2.8,.8);return g},
  croc(){const g=MODEL.croc();g.scale.setScalar(.38);return g},
+ sailfish(){const g=Gp(E('#2a4a7a',26,5,4),E('#d8e2ea',22,3,3.4,0,-2.4,0),C('#2a4a7a',1.2,22,1.2,36,0,0,0,0,-PI/2),E('#1c3a6a',17,11,.7,-2,10,0),C('#2a4a7a',7,10,.8,-28,5,0,0,0,.9),C('#2a4a7a',7,10,.8,-28,-5,0,0,0,PI-.9));eyes(g,18,1,3.4,1.1);return g},
  flyfish(){const g=Gp(E('#4a7fc8',9,2.4,2.4),E('#e8f0f4',8,1.4,2,0,-1,0),C('#4a7fc8',3,6,.6,-11,0,0,0,0,-PI/2),B('#9cc4f0',5,.4,13,2,1,8,0,-.3,0,{transparent:true,opacity:.8}),B('#9cc4f0',5,.4,13,2,1,-8,0,.3,0,{transparent:true,opacity:.8}));return g},
  osprey(){return Gp(E('#5a4632',5,8,5,0,8,0),E('#ffffff',3.6,6,3.6,2.4,7,0),E('#ffffff',3.2,3.2,3.2,1,17,0),B('#3a2a1a',5,1.4,6.6,1,17.6,0),C('#333333',1.1,4,1.1,5,16.4,0,0,0,-PI/2-.5),C('#5a4632',3,9,1.2,-5,3,0,0,0,PI-.5))}
 };
 function flagTex(kind){return canvasTex(64,44,(g)=>{if(kind==='dive'){g.fillStyle='#e0291f';g.fillRect(0,0,64,44);g.strokeStyle='#fff';g.lineWidth=11;g.beginPath();g.moveTo(-4,0);g.lineTo(68,44);g.stroke()}
-  else if(kind==='skull'){g.fillStyle='#111';g.fillRect(0,0,64,44);g.fillStyle='#fff';dot(g,32,18,11);g.fillRect(25,24,14,9);g.fillStyle='#111';dot(g,27.5,17,3.4);dot(g,36.5,17,3.4);g.strokeStyle='#fff';g.lineWidth=4;g.beginPath();g.moveTo(12,34);g.lineTo(52,42);g.moveTo(52,34);g.lineTo(12,42);g.stroke()}
+  else if(kind==='skull'||kind==='player'){g.fillStyle=kind==='player'?'#b01818':'#111';g.fillRect(0,0,64,44);g.fillStyle='#fff';dot(g,32,18,11);g.fillRect(25,24,14,9);g.fillStyle='#111';dot(g,27.5,17,3.4);dot(g,36.5,17,3.4);g.strokeStyle='#fff';g.lineWidth=4;g.beginPath();g.moveTo(12,34);g.lineTo(52,42);g.moveTo(52,34);g.lineTo(12,42);g.stroke()}
   else{g.fillStyle='#5f9f72';g.fillRect(0,0,64,44);g.strokeStyle='#fff';g.lineWidth=7;g.beginPath();g.moveTo(14,22);g.lineTo(27,34);g.lineTo(50,10);g.stroke()}})}
-const FLAG={dive:flagTex('dive'),skull:flagTex('skull'),done:flagTex('done')};
+const FLAG={dive:flagTex('dive'),skull:flagTex('skull'),done:flagTex('done'),player:flagTex('player')};
 function buoyM(kind,col){const fm=new THREE.MeshBasicMaterial({map:FLAG[kind],side:THREE.DoubleSide}),f=new THREE.Mesh(PLANE,fm);f.scale.set(30,20,1);f.position.set(15,48,0);
  const g=Gp(E(col,9,8,9,0,3,0),E('#ffffff',9.2,2.4,9.2,0,3,0),Y('#333333',1,52,1,0,30,0),f);g.userData.flag=f;g.userData.ball=g.children[0];return g}
 
@@ -337,22 +345,22 @@ const HULLG=(()=>{const N=18,pos=[],uv=[],idx=[],wf=u=>22*(u<.25?.72+.28*u/.25:u
  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(idx);g.computeVertexNormals();g.userData.shared=1;return g})();
 const SAILG=(()=>{const g=new THREE.PlaneGeometry(1,1,8,5),p=g.attributes.position;for(let i=0;i<p.count;i++)p.setZ(i,.2*Math.sin((p.getX(i)+.5)*PI)*(.55+.45*Math.sin((p.getY(i)+.5)*PI)));g.computeVertexNormals();g.userData.shared=1;return g})();
 function rope(x1,y1,z1,x2,y2,z2){const l=Math.hypot(x2-x1,y2-y1,z2-z1),m=Y('#2a2018',.35,l,.35,(x1+x2)/2,(y1+y2)/2,(z1+z2)/2);return aim(m,x2-x1,y2-y1,z2-z1)}
-function pirateShipM(black){
+function pirateShipM(black,o){o=o||{};
  const wood=new THREE.MeshStandardMaterial({map:WOOD,color:black?'#6a5444':'#a8845c',roughness:.9,side:THREE.DoubleSide,envMapIntensity:.4}),dark=new THREE.MeshStandardMaterial({map:WOOD,color:'#5a4330',roughness:.9,envMapIntensity:.4}),
-  sail=new THREE.MeshStandardMaterial({map:SAILT,color:black?'#4a4248':'#ffffff',roughness:1,side:THREE.DoubleSide,envMapIntensity:.3}),g=new THREE.Group();
+  sail=new THREE.MeshStandardMaterial({map:SAILT,color:o.sail||(black?'#4a4248':'#ffffff'),roughness:1,side:THREE.DoubleSide,envMapIntensity:.3}),g=new THREE.Group();
  const Bm=(mat,w,h,d,x,y,z)=>{const m=new THREE.Mesh(BOX,mat);m.scale.set(w,h,d);m.position.set(x,y,z);return m};
  g.add(new THREE.Mesh(HULLG,wood),Bm(dark,44,15,35,-63,25,0),Bm(dark,48,2,39,-63,33.5,0),Bm(dark,24,8,22,60,25,0),Bm(dark,150,2.4,1.6,-5,18.5,21.6),Bm(dark,150,2.4,1.6,-5,18.5,-21.6),Y('#5a4028',1.9,64,1.9,112,36,0,0,0,-PI/2+.3));
  const lit={emissive:'#ffb040',emissiveIntensity:1.6};for(let i=0;i<4;i++)g.add(B('#ffd27a',1,6,5,-85.4,26,-13.5+i*9,0,0,0,lit));for(const s of[1,-1])for(let i=0;i<2;i++)g.add(B('#ffd27a',6,5,1,-70+i*14,27,s*17.7,0,0,0,lit));
  g.add(E('#ffcc66',2.6,3.4,2.6,-88,40,0,0,0,0,lit),Y('#2a2018',.5,8,.5,-88,36,0));
  for(const s of[1,-1])for(let k=0;k<5;k++)g.add(Y('#1c1c1c',2.1,13,1.7,-36+k*19,12.5,s*23,s*PI/2,0,0,{metalness:.6,roughness:.5}),B('#2a1c10',7,6,1,-36+k*19,12.5,s*21.4));
- const flagm=new THREE.Mesh(PLANE,new THREE.MeshBasicMaterial({map:FLAG.skull,side:THREE.DoubleSide})),rigs=[],flagP=new THREE.Group();
+ const flagm=new THREE.Mesh(PLANE,new THREE.MeshBasicMaterial({map:o.flag||FLAG.skull,side:THREE.DoubleSide})),rigs=[],flagP=new THREE.Group();
  [[-40,92,58,42],[8,122,70,48],[54,98,58,40]].forEach((m,i)=>{const x=m[0],h=m[1];g.add(Y('#5a4028',2.7,h,2.2,x,14+h/2,0),Y('#5a4028',5.5,3,5.5,x,14+h*.74,0));
   const rig=new THREE.Group();rig.position.x=x;g.add(rig);rigs.push(rig);[[m[2],m[3],.36],[m[2]*.72,m[3]*.72,.74]].forEach(q=>{const sm=new THREE.Mesh(SAILG,sail);sm.scale.set(q[0],q[1],q[0]);sm.rotation.y=PI/2;sm.position.set(3,14+h*q[2],0);rig.add(sm,Y('#5a4028',1.3,q[0]+8,1.3,2,14+h*q[2]+q[1]/2,0,PI/2));});
   g.add(rope(x,14+h,0,x-34,20,20),rope(x,14+h,0,x-34,20,-20));if(i===1){flagm.scale.set(30,20,1);flagm.position.set(15,0,0);flagP.add(flagm);flagP.position.set(x,14+h+12,0);g.add(flagP,Y('#5a4028',.8,26,.8,x,14+h+10,0))}});
  g.add(rope(54,112,0,140,52,0),rope(8,136,0,54,112,0),rope(-40,106,0,8,136,0),rope(-40,106,0,-86,36,0));
  const tri=new THREE.Mesh(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(60,100,0),new THREE.Vector3(136,50,0),new THREE.Vector3(66,34,2)]),sail);tri.geometry.computeVertexNormals();g.add(tri);
  const foam=new THREE.Mesh(DISC,new THREE.MeshBasicMaterial({color:'#ffffff',transparent:true,opacity:.3,depthWrite:false}));foam.rotation.x=-PI/2;foam.scale.set(118,30,1);foam.position.set(-6,.5,0);foam.renderOrder=2;g.add(foam);
- g.userData.flag=flagm;g.userData.rigs=rigs;g.userData.flagP=flagP;g.rotation.order='YXZ';g.scale.setScalar(1.15);return g}
+ g.userData.flag=flagm;g.userData.rigs=rigs;g.userData.flagP=flagP;g.rotation.order='YXZ';g.scale.setScalar(o.sc||1.15);return g}
 
 /* ================= surface scene ================= */
 const S3={};
@@ -406,6 +414,7 @@ function buildSurface(){
  for(let i=0;i<wn;i++){const u=wp0.getX(i),v=wp0.getZ(i);wox[i]=Math.sign(u)*Math.pow(Math.abs(u),2.5)*9000;woz[i]=Math.sign(v)*Math.pow(Math.abs(v),2.5)*9000}
  nt.repeat.set(1,1);
  const water=new THREE.Mesh(wg,new THREE.MeshStandardMaterial({color:'#0e7aad',transparent:true,opacity:.74,roughness:.1,metalness:0,normalMap:nt,normalScale:new THREE.Vector2(.45,.45),envMapIntensity:.6,depthWrite:false}));
+ wg.setAttribute('color',new THREE.Float32BufferAttribute(new Float32Array(wn*3).fill(1),3));water.material.vertexColors=true;
  water.receiveShadow=true;water.frustumCulled=false;sc.add(water);S3.water={g:wg,ox:wox,oz:woz,n:wn};
  {const mk=canvasTex(WX*4,WY*4,(g)=>{const im=g.createImageData(WX*4,WY*4);for(let y=0;y<WY*4;y++)for(let x=0;x<WX*4;x++){const h=hAt((x+.5)*8,(y+.5)*8),v=clamp(1-Math.abs(h+1.6)/3.4,0,1),i=(y*WX*4+x)*4;im.data[i]=im.data[i+1]=im.data[i+2]=255*v*v;im.data[i+3]=255}g.putImageData(im,0,0)});mk.colorSpace=THREE.NoColorSpace;
   const fm=NOISE.clone();fm.repeat.set(WW/150,WH/150);fm.needsUpdate=true;S3.foamT=fm;const foam=new THREE.Mesh(new THREE.PlaneGeometry(WW,WH),new THREE.MeshBasicMaterial({color:'#ffffff',alphaMap:mk,map:fm,transparent:true,opacity:.9,depthWrite:false}));foam.rotation.x=-PI/2;foam.position.set(WW/2,.35,WH/2);foam.renderOrder=1;sc.add(foam)}
@@ -441,15 +450,18 @@ function buildSurface(){
  const anc=Gp(Y('#6b3f30',2.6,58,2.6,0,31,0,0,0,0,{metalness:.5,roughness:.7}),arc,B('#6b3f30',34,3,3,0,52,0,0,PI/2,0),TO('#6b3f30',6,6,6,0,65,0),C('#6b3f30',5,10,2,-17,22,0),C('#6b3f30',5,10,2,17,22,0));anc.rotation.set(.1,.6,.45);anc.scale.setScalar(1.7);add(anc,LM.anchor,hAt(LM.anchor.x,LM.anchor.y)-6);
  const rk={flatShading:true};add(Gp(I('#a39c8a',13,40,13,-24,12,0,0,.4,.08,rk),I('#978f7c',12,36,13,24,10,0,0,1,-.1,rk),I('#a39c8a',38,10,14,0,46,0,0,.3,.05,rk),I('#8d8674',16,9,14,-30,-2,6,0,2,0,rk),I('#8d8674',13,8,12,32,-3,-5,0,1,0,rk)),LM.arch);
  // dynamic things
- S3.boat=shadows(boatM(),true,true);for(let i=0;i<3;i++)S3.boat.children[i].material=M('#d5dbdf',{metalness:.75,roughness:.32});sc.add(S3.boat);
+ S3.boat=shadows(pirateShipM(false,{sc:.62,sail:'#f6efe0',flag:FLAG.player}),true,true);sc.add(S3.boat);
  S3.wake=[];for(let i=0;i<60;i++){const m=new THREE.Mesh(DISC,new THREE.MeshBasicMaterial({color:'#ffffff',transparent:true,opacity:0,depthWrite:false}));m.rotation.x=-PI/2;m.position.y=.8;m.renderOrder=2;sc.add(m);S3.wake.push(m)}
  const ringM=c=>{const r=new THREE.Mesh(RING,new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:.85,side:THREE.DoubleSide,depthWrite:false}));r.rotation.x=-PI/2;r.position.y=1;r.renderOrder=2;return r};
  S3.sites=SITES.map((s,i)=>{const g=shadows(buoyM('dive','#ff7a2a'),true);g.position.set(s.x,0,s.y);const r=ringM(i===4?'#ff3b2a':'#ffffff');g.add(r);g.userData.ring=r;
    const beam=new THREE.Mesh(CYL,new THREE.MeshBasicMaterial({color:i===4?'#ff5040':'#ffe060',transparent:true,opacity:.28,depthWrite:false,fog:false,blending:THREE.AdditiveBlending}));beam.scale.set(9,900,9);beam.position.y=450;g.add(beam);g.userData.beam=beam;
    if(i===4){for(const a of[PI/4,-PI/4]){const x=new THREE.Mesh(BOX,new THREE.MeshBasicMaterial({color:'#e0291f'}));x.scale.set(90,2,14);x.position.y=1.2;x.rotation.y=a;g.add(x)}}sc.add(g);return g});
  S3.wrecks=WRECKS.map(w=>{const g=shadows(buoyM('skull','#222222'),true);g.position.set(w.x,0,w.y);sc.add(g);return g});
- S3.ships=[0,1,2,3].map(i=>{const g=shadows(pirateShipM(i%2===0),true,true);sc.add(g);return g});
- S3.balls=[];for(let i=0;i<8;i++){const m=E('#141414',4,4,4);m.visible=false;m.castShadow=true;sc.add(m);S3.balls.push(m)}
+ S3.ships=[0,1,2,3,4].map(i=>{const g=shadows(pirateShipM(i%2===0,i===4?{sc:1.6,sail:'#2a2228'}:{sail:['#c8b8a0','#e8dcc0','#b04a3a','#d8d0b8'][i]}),true,true);g.visible=false;sc.add(g);return g});
+ const puffT=canvasTex(64,64,(g)=>{const r=g.createRadialGradient(32,32,2,32,32,31);r.addColorStop(0,'rgba(255,255,255,.95)');r.addColorStop(.5,'rgba(255,255,255,.5)');r.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=r;g.fillRect(0,0,64,64)});
+ S3.fx=[];for(let i=0;i<110;i++){const p=new THREE.Sprite(new THREE.SpriteMaterial({map:puffT,transparent:true,depthWrite:false,opacity:0}));p.visible=false;p.userData={l:0};sc.add(p);S3.fx.push(p)}
+ S3.loot=[];for(let i=0;i<5;i++){const g=Gp(B('#7a4a1e',22,13,15,0,4,0),B('#93602a',22,5,15,0,12,0),B('#e0b83a',23,2,16,0,7,0),B('#e0b83a',3,14,16,-6,5,0),B('#e0b83a',3,14,16,6,5,0),glow(120));shadows(g,true);g.visible=false;sc.add(g);S3.loot.push(g)}
+ S3.balls=[];for(let i=0;i<24;i++){const m=E('#141414',4,4,4);m.visible=false;m.castShadow=true;sc.add(m);S3.balls.push(m)}
  S3.flash=glow(90);S3.flash.visible=false;sc.add(S3.flash);
  S3.caches=CACHES.map(c=>{const g=glow(46);g.position.set(c.x,6,c.y);sc.add(g);return g});
 }
@@ -475,6 +487,7 @@ function newGame(){
  put('turtle','turtle',6,t=>t===T.REEF);
  put('fin','reefshark',7,t=>t===T.DEEP);
  put('flyfish','flyingfish',10,t=>t===T.DEEP);
+ put('sailfish','sailfish',6,t=>t===T.DEEP);
  put('spoonbill','spoonbill',9,t=>t===T.MUD);
  put('heron','heron',8,(t,x,y)=>t===T.SAND&&nearType(x,y,T.SHAL));
  put('deer','deer',10,(t,x,y)=>t===T.HAM&&nearType(x,y,T.SAND));
@@ -482,14 +495,14 @@ function newGame(){
  for(let i=0;i<7;i++)G.ents.push({kind:'pelican',sp:'pelican',x:R()*WW,y:R()*WH,a:R()*TAU,ph:R()*9});
  for(let i=0;i<5;i++)G.ents.push({kind:'frigate',sp:'frigate',x:R()*WW,y:R()*WH,a:R()*TAU,ph:R()*9});
  const m=SITES[0];G.ents.push({kind:'croc',sp:'croc',x:m.x+70,y:m.y-40,x0:m.x+70,y0:m.y-40,ph:1,a:2});
- G.ships=[18,50,82,112].map((tx,i)=>{const p=findTile(tx,cyf(tx)+17,t=>t===T.DEEP);return{x:p.x,y:p.y,a:i%2?PI:0,ph:i*2.1,cd:2+i,looted:false,loot:['a chest of pieces of eight','the captain\'s golden telescope','a barrel of rubies','a jeweled cutlass'][i]}});G.balls=[];
- S3.ships.forEach(g=>{g.userData.flag.material.map=FLAG.skull});
+ Object.assign(G,{hp:100,gold:0,sunk:0,reload:0,calm:9,hitT:0,loot:[],balls:[],home:{x:st.x,y:st.y},bossUp:0,bossDead:0});
+ G.ships=[18,50,82,112].map(tx=>{const p=findTile(tx,cyf(tx)+17,t=>t===T.DEEP);return newShip(p.x,p.y,false)});hudHull();
  WRECKS.forEach(w=>{w.done=false;w.hasKey=false});SITES.forEach(w=>{w.hasKey=false});CACHES.forEach(c=>{c.found=false});
  spawnEntMeshes();hud();
 }
 function hud(){
  $('cMap').textContent='🗺️ '+Math.min(G.pieces,4)+'/4';$('cEco').textContent='🌿 '+G.eco;$('cWr').textContent='☠️ '+WRECKS.filter(w=>w.done).length+'/'+WRECKS.length;
- $('cPi').textContent='🏴‍☠️ '+G.ships.filter(k=>k.looted).length+'/'+G.ships.length;$('cCl').textContent='📜 Clues '+CACHES.filter(c=>c.found).length+'/'+CACHES.length;
+ $('cPi').textContent='🏴‍☠️ Sunk '+G.sunk;$('cGold').textContent='💰 '+G.gold;$('cCl').textContent='📜 Clues '+CACHES.filter(c=>c.found).length+'/'+CACHES.length;
  $('cJ').textContent='📖 Journal '+Object.keys(G.found).length+'/'+NSP;
  const d=G.dive&&G.dive.site;
  $('goal').innerHTML=G.mode==='dive'?('<b>'+d.name+'</b> · '+(G.dive.got?'Got it! Swim up to the surface.':d.locked&&!d.hasKey?'Find the key in the stern cabin (left end of the wreck).':d.id==='hole'?'Dive to the bottom of the hole.':d.id==='bonus'?'Collect doubloons and find the pirate chest in the bow (right end).':'Search for the hidden map piece.'))
@@ -514,17 +527,18 @@ function journal(){
 function clues(){$('clist').innerHTML=CACHES.map((c,i)=>'<div class="clue'+(c.found?' done':'')+'"><b>'+(c.found?'✅ '+c.lm+' - found '+c.e+' '+c.item:'Clue '+(i+1))+'</b><br>'+c.clue+'</div>').join('');$('cl').classList.add('on');G.paused=true}
 const closeM=id=>()=>{$(id).classList.remove('on');G.paused=anyModal();keys.clear()};
 $('mini').onclick=()=>{if(!anyModal())openMap()};$('mpClose').onclick=closeM('mp');
-function camToggle(){G.cam=G.cam==='chase'?'top':'chase';toast(G.cam==='chase'?'🎥 Chase camera: left/right to steer, up to go, down to brake or reverse.':'🎥 Top-down camera: press any direction to go that way.',0,3500)}$('cCam').onclick=camToggle;
+function camToggle(){G.cam=G.cam==='chase'?'top':'chase';toast(G.cam==='chase'?'🎥 Chase camera: left/right to steer, up for more sail, down to slow.':'🎥 Top-down camera: press any direction to go that way.',0,3500)}$('cCam').onclick=camToggle;
 $('cJ').onclick=journal;$('jClose').onclick=closeM('jr');$('cCl').onclick=clues;$('clClose').onclick=closeM('cl');
 
 /* ---------- input ---------- */
-const keys=new Set();let actQ=false;
+const keys=new Set();let actQ=false,fireQ=false;
 addEventListener('keydown',e=>{const k=e.key.toLowerCase();
  if(k===' '||k==='enter'||k==='e'){e.preventDefault();if($('dlg').classList.contains('on')){if(!e.repeat)closeDlg()}else if(!e.repeat&&!anyModal())actQ=true;return}
  if(k==='j'&&!$('dlg').classList.contains('on')){$('jr').classList.contains('on')?$('jClose').onclick():journal();return}
  if(k==='c'&&!$('dlg').classList.contains('on')){$('cl').classList.contains('on')?$('clClose').onclick():clues();return}
  if(k==='m'&&!$('dlg').classList.contains('on')){$('mp').classList.contains('on')?$('mpClose').onclick():(G.mode==='surface'&&!anyModal()&&openMap());return}
  if(k==='v'&&!anyModal()){camToggle();return}
+ if(k==='f'&&!anyModal()){if(!e.repeat)fireQ=true;return}
  if(k==='escape'){if($('mp').classList.contains('on'))$('mpClose').onclick();if($('jr').classList.contains('on'))$('jClose').onclick();if($('cl').classList.contains('on'))$('clClose').onclick();return}
  if(k.startsWith('arrow'))e.preventDefault();keys.add(k)});
 addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
@@ -533,7 +547,7 @@ const joy={id:null,bx:0,by:0,x:0,y:0};
 ov.addEventListener('pointerdown',e=>{if(joy.id===null){joy.id=e.pointerId;joy.bx=e.clientX;joy.by=e.clientY;joy.x=joy.y=0;try{ov.setPointerCapture(e.pointerId)}catch(_){}}});
 ov.addEventListener('pointermove',e=>{if(e.pointerId===joy.id){const dx=e.clientX-joy.bx,dy=e.clientY-joy.by,m=Math.hypot(dx,dy),R=56;joy.x=dx/Math.max(m,R);joy.y=dy/Math.max(m,R);if(m>R){joy.bx=e.clientX-dx/m*R;joy.by=e.clientY-dy/m*R}}});
 const jend=e=>{if(e.pointerId===joy.id){joy.id=null;joy.x=joy.y=0}};ov.addEventListener('pointerup',jend);ov.addEventListener('pointercancel',jend);
-$('prompt').onclick=()=>{actQ=true};
+$('prompt').onclick=()=>{actQ=true};$('fire').onclick=()=>{fireQ=true};
 function axis(){let x=0,y=0;if(keys.has('arrowleft')||keys.has('a'))x--;if(keys.has('arrowright')||keys.has('d'))x++;if(keys.has('arrowup')||keys.has('w'))y--;if(keys.has('arrowdown')||keys.has('s'))y++;
  if(x||y){const m=Math.hypot(x,y);return[x/m,y/m]}return[joy.x,joy.y]}
 let pTxt='';function prompt_(t){if(t===pTxt)return;pTxt=t;const p=$('prompt');if(t){p.innerHTML=t+' <small>[Space]</small>';p.style.display='block'}else p.style.display='none'}
@@ -541,67 +555,101 @@ let pTxt='';function prompt_(t){if(t===pTxt)return;pTxt=t;const p=$('prompt');if
 /* ---------- surface update ---------- */
 function updSurface(dt){
  const b=G.boat,[ix,iy]=axis(),mag=Math.hypot(ix,iy),here=tileAt(b.x,b.y);
- // forces on the airboat: fan thrust, water drag (grows with speed squared), air drag against the true wind, extra drag in waves
- const wd=G.wind,wvx=Math.cos(wd.dir)*wd.spd*5.14,wvy=Math.sin(wd.dir)*wd.spd*5.14,rx=wvx-b.vx,ry=wvy-b.vy,rel=Math.hypot(rx,ry),cw=.00075,chop=1+waveAmp*depthF(b.x,b.y)*.55;
+ // forces on your ship: sail drive (depends on the angle to the wind), water drag (speed squared), windage, extra drag in waves
+ const wd=G.wind,wvx=Math.cos(wd.dir)*wd.spd*5.14,wvy=Math.sin(wd.dir)*wd.spd*5.14,rx=wvx-b.vx,ry=wvy-b.vy,rel=Math.hypot(rx,ry),cw=.0003,chop=1+waveAmp*depthF(b.x,b.y)*.4;
+ const pbeta=Math.abs(wrapA(b.a-(wd.dir+PI))),pf=(pbeta<.75?.55:pbeta<1.6?.72+.28*(pbeta-.75)/.85:1-.12*(pbeta-1.6)/1.54)*clamp(.55+wd.spd/28,.6,1.25);b.pol=pf; // a nimble sloop: slow into the wind, fastest across it
  if(G.cam==='chase'){
   const thr=Math.abs(iy)>.15?-iy:0,turn=Math.abs(ix)>.15?ix:0,ca=Math.cos(b.a),sa=Math.sin(b.a),vf=b.vx*ca+b.vy*sa,vl=-b.vx*sa+b.vy*ca;
-  const af=(thr>0?thr*178:thr*70)-(.0015*chop*Math.abs(vf)*vf+.35*vf),al=-(.03*Math.abs(vl)*vl+2.2*vl);
+  const af=(thr>0?thr*122*pf:thr*55)-(.0022*chop*Math.abs(vf)*vf+.3*vf),al=-(.04*Math.abs(vl)*vl+2.6*vl);
   b.vx+=(af*ca-al*sa+cw*rel*rx)*dt;b.vy+=(af*sa+al*ca+cw*rel*ry)*dt;b.spd=vf;
-  b.a+=turn*2*dt*clamp(.35+Math.abs(thr)*.45+Math.abs(vf)/200,0,1)*(vf<-8&&thr<0?-1:1);b.fan+=dt*(5+Math.abs(thr)*30+Math.abs(vf)*.05);
- }else{const top=215/Math.sqrt(chop),kk=1-Math.pow(.002,dt);
-  if(mag>.15){const m=Math.min(1,mag);b.vx+=(ix/mag*m*top-b.vx)*kk;b.vy+=(iy/mag*m*top-b.vy)*kk;b.fan+=dt*(14+20*mag)}else{const st=Math.pow(.05,dt);b.vx*=st;b.vy*=st;b.fan+=dt*4}
+  b.a+=turn*1.25*dt*clamp(.45+Math.abs(vf)/160,0,1)*(vf<-8&&thr<0?-1:1);
+ }else{const top=165*pf/Math.sqrt(chop),kk=1-Math.pow(.02,dt);
+  if(mag>.15){const m=Math.min(1,mag);b.vx+=(ix/mag*m*top-b.vx)*kk;b.vy+=(iy/mag*m*top-b.vy)*kk}else{const st=Math.pow(.1,dt);b.vx*=st;b.vy*=st}
   b.vx+=cw*rel*rx*dt;b.vy+=cw*rel*ry*dt;
-  if(Math.hypot(b.vx,b.vy)>25){let da=Math.atan2(b.vy,b.vx)-b.a;while(da>PI)da-=TAU;while(da<-PI)da+=TAU;b.a+=da*(1-Math.pow(.0005,dt))}
+  if(Math.hypot(b.vx,b.vy)>20){let da=Math.atan2(b.vy,b.vx)-b.a;while(da>PI)da-=TAU;while(da<-PI)da+=TAU;b.a+=da*(1-Math.pow(.02,dt))}
   b.spd=Math.hypot(b.vx,b.vy)}
- G.hudT=(G.hudT||0)-dt;if(G.hudT<=0){G.hudT=.3;$('cWind').textContent='💨 '+windFrom()+' '+Math.round(wd.spd)+' kn · 🚤 '+Math.round(Math.hypot(b.vx,b.vy)/5.14)+' kn'}
- if(wd.spd>21&&!G.gustTip){G.gustTip=1;toast('💨 A squall! Strong wind builds bigger waves offshore and shoves your airboat sideways - its big fan cage catches the wind like a sail.',0,6500)}
+ G.hudT=(G.hudT||0)-dt;if(G.hudT<=0){G.hudT=.3;$('cWind').textContent='💨 '+windFrom()+' '+Math.round(wd.spd)+' kn · ⛵ '+Math.round(Math.hypot(b.vx,b.vy)/5.14)+' kn'}
+ if(wd.spd>21&&!G.gustTip){G.gustTip=1;toast('💨 A squall! Strong wind fills your sails and builds bigger waves offshore. Sailing ships are fastest with the wind on the side, and slowest heading straight into it.',0,7000)}
  let nx=b.x+b.vx*dt,ny=b.y+b.vy*dt;
- let hit=0;if(solid(tileAt(nx+Math.sign(b.vx)*10,b.y))||nx<20||nx>WW-20){b.vx=0;nx=b.x;hit++}
- if(solid(tileAt(nx,ny+Math.sign(b.vy)*10))||ny<20||ny>WH-20){b.vy=0;ny=b.y;hit++}
+ let hit=0;if(solid(tileAt(nx+Math.sign(b.vx)*14,b.y))||nx<20||nx>WW-20){b.vx=0;nx=b.x;hit++}
+ if(solid(tileAt(nx,ny+Math.sign(b.vy)*14))||ny<20||ny>WH-20){b.vy=0;ny=b.y;hit++}
  b.x=nx;b.y=ny;const sp=Math.hypot(b.vx,b.vy);
- if(sp>40&&Math.random()<dt*30){const w=S3.wake[G.wi++%S3.wake.length];w.position.set(b.x-Math.cos(b.a)*24+(Math.random()-.5)*12,.8,b.y-Math.sin(b.a)*24+(Math.random()-.5)*12);w.userData.l=1}
+ if(sp>40&&Math.random()<dt*30){const w=S3.wake[G.wi++%S3.wake.length];w.position.set(b.x-Math.cos(b.a)*48+(Math.random()-.5)*18,.8,b.y-Math.sin(b.a)*48+(Math.random()-.5)*18);w.userData.l=1}
+ for(const sh of G.ships)if(sh.state==='sail'&&Math.random()<dt*14){const w=S3.wake[G.wi++%S3.wake.length];w.position.set(sh.x-Math.cos(sh.a)*95+(Math.random()-.5)*30,.8,sh.y-Math.sin(sh.a)*95+(Math.random()-.5)*30);w.userData.l=1}
  let zone=['Atlantic · Open Water','Sandy Shallows','Seagrass Meadow','Coral Reef','Tidal Mudflat'][here]||'';
  const tx=b.x/TILE|0,ty=b.y/TILE|0;
  if(tx>1&&ty>1&&tx<WX-2&&ty<WY-2&&nearType(tx,ty,T.MANG)){zone='Mangrove Forest';discover('mangrove')}
- if(here===T.GRASS){discover('turtlegrass');if(sp>150&&G.found.turtlegrass)discover('airboat')}
- if(here===T.DEEP&&!G.deepTip){G.deepTip=1;toast('🌊 Out past the reef the wind has room to build real waves. In the shallow bay the sea floor and the islands knock them flat - which is why airboats love the backcountry.',0,6500)}
+ if(here===T.GRASS){discover('turtlegrass');if(sp>80&&G.found.turtlegrass)discover('airboat')}
+ if(here===T.DEEP&&!G.deepTip){G.deepTip=1;toast('🌊 Out past the reef the wind has room to build real waves. In the shallow bay the sea floor and the islands knock them flat. Out here is also where rival pirates hunt.',0,6500)}
  if(Math.hypot(b.x-LM.piers[1].x,b.y-LM.piers[1].y)<150&&!G.railTip){G.railTip=1;toast('🚂 These piers are from the Overseas Railroad, which reached Key West in 1912. The great hurricane of 1935 wrecked it, and the highway was later built along its route.',0,7000)}
  $('cZone').textContent=zone;
  for(const e of G.ents){
   const d=Math.hypot(e.x-b.x,e.y-b.y);
   if(e.kind==='manatee'){e.x=e.x0+Math.sin(G.t*.12+e.ph)*26;e.y=e.y0+Math.cos(G.t*.09+e.ph)*20;e.a=Math.sin(G.t*.1+e.ph)*2;
-   if(d<60&&sp>125)oops('Too fast near a manatee! Slow to idle speed around sea cows.',20)}
+   if(d<60&&sp>110)oops('Too fast near a manatee! Slow to idle speed around sea cows.',20)}
   else if(e.kind==='dolphin'||e.kind==='fin'){e.a+=dt*.35;e.x=e.x0+Math.cos(e.a)*90;e.y=e.y0+Math.sin(e.a)*60}
+  else if(e.kind==='sailfish'){e.a+=dt*.6;e.x=e.x0+Math.cos(e.a)*170;e.y=e.y0+Math.sin(e.a)*120}
   else if(e.kind==='flyfish'){e.a+=dt*.8;e.x=e.x0+Math.cos(e.a)*130;e.y=e.y0+Math.sin(e.a)*90}
   else if(e.kind==='turtle'){e.x=e.x0+Math.sin(G.t*.1+e.ph)*50;e.y=e.y0+Math.cos(G.t*.13+e.ph)*40}
   else if(e.kind==='pelican'||e.kind==='frigate'){e.x+=Math.cos(e.a)*70*dt;e.y+=Math.sin(e.a)*70*dt;e.a+=Math.sin(G.t*.2+e.ph)*dt*.3;if(e.x<-50)e.x=WW+40;if(e.x>WW+50)e.x=-40;if(e.y<-50)e.y=WH+40;if(e.y>WH+50)e.y=-40}
   if(d<(e.kind==='pelican'||e.kind==='frigate'||e.kind==='deer'?150:120))discover(e.sp);
  }
  if(Math.hypot(LM.osprey.x-b.x,LM.osprey.y-b.y)<130)discover('osprey');
- let shipPr='';
- for(const sh of G.ships){ // ghost ships patrol the deep water
+ // ---- pirate battles: broadsides, hull damage, sinking, treasure ----
+ G.reload-=dt;G.calm+=dt;G.hitT-=dt;if(G.calm>8&&G.hp<100){G.hp=Math.min(100,G.hp+4*dt);hudHull()}
+ if(G.stage===4&&!G.bossUp){G.bossUp=1;const p=findTile(SITES[4].x/TILE+7,SITES[4].y/TILE+2,t=>t===T.DEEP);G.ships.push(newShip(p.x,p.y,true));toast('☠️ The <b>Leviathan</b>, flagship of the Dread Admiral, guards Blacktide\'s Hole. Sink her to reach the treasure!',1,7500)}
+ for(const sh of G.ships){
+  if(sh.state==='gone'){sh.rt-=dt;if(sh.rt<=0&&!sh.boss)respawn(sh);continue}
+  if(sh.state==='sinking'){sh.st+=dt;if(Math.random()<dt*8)puff(sh.x+(Math.random()-.5)*90,4,sh.y+(Math.random()-.5)*40,'#ffffff',12,30,1.2,10);if(sh.st>9){sh.state='gone';sh.rt=35}continue}
+  const dx=b.x-sh.x,dy=b.y-sh.y,d=Math.hypot(dx,dy),brg=Math.atan2(dy,dx);
   const lx=sh.x+Math.cos(sh.a)*190,ly=sh.y+Math.sin(sh.a)*190,clear=lx>80&&ly>80&&lx<WW-80&&ly<WH-80&&tileAt(lx,ly)===T.DEEP&&tileAt(sh.x+Math.cos(sh.a)*110,sh.y+Math.sin(sh.a)*110)===T.DEEP;
   const off=wrapA(sh.a-(wd.dir+PI)),beta=Math.abs(off),pol=beta<.75?.18:beta<1.6?.55+.45*(beta-.75)/.85:1-.25*(beta-1.6)/1.54; // a square-rigger cannot sail into the wind
-  sh.a+=(clear?Math.sin(G.t*.13+sh.ph)*.05+(beta<.9?(off>0?.4:-.4):0):.55)*dt;const v=clear?Math.max(10,wd.spd*2.7*pol):14;sh.pol=pol;sh.x+=Math.cos(sh.a)*v*dt;sh.y+=Math.sin(sh.a)*v*dt;
-  const dx=b.x-sh.x,dy=b.y-sh.y,d=Math.hypot(dx,dy);
-  if(d<62){b.x=sh.x+dx/d*62;b.y=sh.y+dy/d*62;b.spd*=.9}
-  if(d<620&&!G.shipTip){G.shipTip=1;toast('🏴‍☠️ A pirate ghost ship! Dodge its cannonballs, then sneak up behind its stern to grab the loot.',0,6500)}
-  if(!sh.looted){sh.cd-=dt;if(d<470&&d>70&&sh.cd<=0){sh.cd=3.4;const T=d/250,tx=b.x+b.vx*T*.8,ty=b.y+b.vy*T*.8;G.balls.push({x:sh.x,y:sh.y,h:22,vx:(tx-sh.x)/T,vy:(ty-sh.y)/T,vh:GRAV*1.43*T-22/T,fx:sh.x,fy:sh.y,ft:.15});sfx(70,.5,'sawtooth',.16);sfx(45,.6,'square',.1)}
-   const sx=sh.x-Math.cos(sh.a)*112,sy=sh.y-Math.sin(sh.a)*112;if(Math.hypot(b.x-sx,b.y-sy)<62){shipPr='🏴‍☠️ Grab the loot!';if(actQ&&!G.paused){sh.looted=true;G.eco+=120;sfx(660,.15);setTimeout(()=>sfx(990,.15),120);setTimeout(()=>sfx(1320,.3),240);hud();
-     dlg('<h2>🏴‍☠️ Loot grabbed!</h2><p>You hook a line over the stern rail and haul out <b>'+sh.loot+'</b>. The ghost crew strike their colors and stop firing.</p><p>+120 points. Pirate ships outsmarted: <b>'+G.ships.filter(k=>k.looted).length+' of '+G.ships.length+'</b>.</p>','Yo ho ho!')}}}
+  let steer=Math.sin(G.t*.13+sh.ph)*.05+(beta<.9?(off>0?.4:-.4):0);
+  if(d<720){const want=d>380?.9:d<190?2:PI/2,o1=wrapA(brg+want-sh.a),o2=wrapA(brg-want-sh.a);steer=clamp(Math.abs(o1)<Math.abs(o2)?o1:o2,-.5,.5)} // manoeuvre to bring a broadside to bear
+  sh.a+=(clear?steer:.55)*dt;const v=clear?Math.max(d<720?20:10,wd.spd*2.7*pol):14;sh.pol=pol;sh.x+=Math.cos(sh.a)*v*dt;sh.y+=Math.sin(sh.a)*v*dt;
+  if(d<74){b.x=sh.x+dx/d*74;b.y=sh.y+dy/d*74;b.vx*=.9;b.vy*=.9}
+  if(d<700&&!G.shipTip){G.shipTip=1;toast('🏴‍☠️ Enemy sail! Turn so the rival is off your side, then fire your broadside with <b>F</b> or the 🔥 button. Sink her and grab the treasure she drops.',0,8000)}
+  sh.cd-=dt;const side=Math.abs(Math.sin(wrapA(brg-sh.a)));
+  if(d<500&&d>70&&side>.62&&sh.cd<=0){sh.cd=sh.boss?2.5:3.4;const n=sh.boss?3:sh.lvl>3?2:1,T=d/260;for(let k=0;k<n;k++){const o=(k-(n-1)/2)*44;shoot(sh.x+Math.cos(sh.a)*o,sh.y+Math.sin(sh.a)*o,b.x+b.vx*T*.8+(Math.random()-.5)*56,b.y+b.vy*T*.8+(Math.random()-.5)*56,'e',sh.boss?13:8+Math.min(sh.lvl,6))}}
+  if(sh.hp<sh.max*.55&&Math.random()<dt*7)puff(sh.x+(Math.random()-.5)*70,36,sh.y+(Math.random()-.5)*24,sh.hp<sh.max*.25?'#3a1c10':'#2c2c2c',22,70,2.6,20);
  }
- for(const c of G.balls){c.x+=c.vx*dt;c.y+=c.vy*dt;c.h+=c.vh*dt;c.vh-=GRAV*2.86*dt;c.vx+=(wvx-c.vx)*.06*dt;c.vy+=(wvy-c.vy)*.06*dt;c.ft-=dt;
-  if(c.h<=0){c.dead=1;for(let i=0;i<7;i++){const w=S3.wake[G.wi++%S3.wake.length];w.position.set(c.x+(Math.random()-.5)*26,.8,c.y+(Math.random()-.5)*26);w.userData.l=1}sfx(220,.2,'triangle',.05);
-   if(Math.hypot(c.x-b.x,c.y-b.y)<36){const a=Math.atan2(b.y-c.y,b.x-c.x);b.vx+=Math.cos(a)*160;b.vy+=Math.sin(a)*160;b.spd*=.4;oops('Splash! A cannonball hit your airboat.',15)}}}
+ for(const c of G.balls){c.x+=c.vx*dt;c.y+=c.vy*dt;c.h+=c.vh*dt;c.vh-=GRAV*2.86*dt;c.vx+=(wvx-c.vx)*.06*dt;c.vy+=(wvy-c.vy)*.06*dt;
+  if(c.own==='p'){if(c.h<36)for(const sh of G.ships)if(sh.state==='sail'&&!c.dead){const ex=c.x-sh.x,ey=c.y-sh.y,ca=Math.cos(sh.a),sa=Math.sin(sh.a),k=sh.boss?1.45:1.15;if(Math.abs(ex*ca+ey*sa)<94*k&&Math.abs(-ex*sa+ey*ca)<25*k){c.dead=1;hitShip(sh,c)}}}
+  else if(c.h<26){const ex=c.x-b.x,ey=c.y-b.y,ca=Math.cos(b.a),sa=Math.sin(b.a);if(Math.abs(ex*ca+ey*sa)<54&&Math.abs(-ex*sa+ey*ca)<18){c.dead=1;G.hp-=c.dmg;G.calm=0;G.hitT=.35;burst(c.x,16,c.y);sfx(110,.3,'sawtooth',.14);hudHull();if(G.hp<=0)playerSunk()}}
+  if(!c.dead&&c.h<=0){c.dead=1;for(let i=0;i<6;i++){const w=S3.wake[G.wi++%S3.wake.length];w.position.set(c.x+(Math.random()-.5)*26,.8,c.y+(Math.random()-.5)*26);w.userData.l=1}for(let i=0;i<5;i++)puff(c.x+(Math.random()-.5)*8,4,c.y+(Math.random()-.5)*8,'#ffffff',6,20,.9,34+Math.random()*30,0,0,90);sfx(220,.2,'triangle',.05)}}
  G.balls=G.balls.filter(c=>!c.dead);
+ G.loot=G.loot.filter(l=>{if(Math.hypot(l.x-b.x,l.y-b.y)<56){G.gold+=l.gold;sfx(880,.12);setTimeout(()=>sfx(1320,.2),100);toast('💰 Treasure hauled aboard: <b>'+l.gold+' gold</b> from the '+l.name+'!',0,3500);hud();return false}return true});
  const s=SITES[G.stage];let pr='';
  for(const c of CACHES)if(!c.found&&Math.hypot(c.x-b.x,c.y-b.y)<46){pr='🔍 Search here';if(actQ){c.found=true;G.eco+=60;sfx(660,.15);setTimeout(()=>sfx(990,.15),120);setTimeout(()=>sfx(1320,.3),240);hud();
    const n=CACHES.filter(k=>k.found).length,all=n===CACHES.length;if(all)G.eco+=250;hud();
    dlg('<h2>'+c.e+' Hidden treasure found!</h2><p>At <b>'+c.lm+'</b> you haul up a barnacle-covered box. Inside: <b>'+c.item+'</b>!</p><p>+60 points. Crew treasures found: <b>'+n+' of '+CACHES.length+'</b>.</p>'+(all?'<p><b>You solved every clue! +250 bonus points.</b></p>':'<p>Open 📜 Clues to read the next riddle.</p>'),'Arrr!')}}
- if(s&&Math.hypot(s.x-b.x,s.y-b.y)<75){pr='🤿 Drop anchor &amp; dive';if(actQ&&!G.paused){b.vx=b.vy=0;startDive(s)}}
+ let block='';if(s&&Math.hypot(s.x-b.x,s.y-b.y)<75){if(G.stage===4&&!G.bossDead)block='⚔️ Sink the Leviathan first!';else{pr='🤿 Drop anchor &amp; dive';if(actQ&&!G.paused){b.vx=b.vy=0;startDive(s)}}}
  for(const w of WRECKS)if(G.mode==='surface'&&!w.done&&Math.hypot(w.x-b.x,w.y-b.y)<75){pr='☠️ Dive the pirate wreck';if(actQ&&!G.paused){b.vx=b.vy=0;startDive(w)}}
- prompt_(pr||shipPr);
+ if(G.mode==='surface'&&!G.paused&&(fireQ||(actQ&&!pr))&&G.reload<=0)playerFire();
+ if(G.mode==='surface')prompt_(pr||block);$('fire').style.opacity=G.reload>0?.45:1;
 }
+/* ---------- pirate battle helpers ---------- */
+const SHIPNAMES=['Red Mako','Sea Vulture','Bloody Mary','Gallows Bird','Iron Eel','Widow Maker','Storm Crow','Rum Runner','Night Heron','Salty Dog','Black Marlin II','Grinning Skull'];
+function newShip(x,y,boss){const n=G.sunk||0;return{x,y,a:Math.random()*TAU,ph:Math.random()*9,cd:3,boss:!!boss,lvl:n,hp:boss?340:Math.min(100+18*n,230),max:boss?340:Math.min(100+18*n,230),name:boss?'Leviathan':SHIPNAMES[(G.nameI=(G.nameI||0)+1)%SHIPNAMES.length],bounty:boss?1000:100+25*n,state:'sail',st:0,rt:0,py:0,pp:0,pr:0}}
+function respawn(sh){const b=G.boat;let best=null,bd=-1;for(const tx of[10,30,48,66,84,100,114]){const p=findTile(tx,cyf(tx)+18,t=>t===T.DEEP),d=Math.hypot(p.x-b.x,p.y-b.y);if(d>bd){bd=d;best=p}}Object.assign(sh,newShip(best.x,best.y,false))}
+function puff(x,y,z,col,s0,s1,life,rise,vx,vz,grav){const p=S3.fx[G.fxi=((G.fxi||0)+1)%S3.fx.length],u=p.userData;p.position.set(x,y,z);p.material.color.set(col);u.l=u.m=life;u.s0=s0;u.s1=s1;u.vy=rise;u.vx=vx||0;u.vz=vz||0;u.g=grav||0;u.w=grav?0:1;p.visible=true}
+function burst(x,y,z){for(let i=0;i<7;i++)puff(x,y,z,i%2?'#8a5a2a':'#5a3a1c',4,9,.7,40+Math.random()*50,(Math.random()-.5)*120,(Math.random()-.5)*120,170);puff(x,y+6,z,'#ffb040',16,46,.25,0);puff(x,y+8,z,'#555555',14,50,1.6,24);G.flashT=.12;S3.flash.position.set(x,y+6,z)}
+function shoot(x,y,tx,ty,own,dmg){const d=Math.hypot(tx-x,ty-y),T=clamp(d/260,.35,2.3);G.balls.push({x,y,h:22,vx:(tx-x)/T,vy:(ty-y)/T,vh:GRAV*1.43*T-22/T,own,dmg});
+ const a=Math.atan2(ty-y,tx-x);for(let i=0;i<3;i++)puff(x+Math.cos(a)*(22+i*10),24,y+Math.sin(a)*(22+i*10),'#e8e4dc',10,44+i*8,1.8+i*.3,10,Math.cos(a)*30,Math.sin(a)*30);puff(x+Math.cos(a)*20,24,y+Math.sin(a)*20,'#ffc050',10,30,.14,0);
+ sfx(own==='p'?82:66,.5,'sawtooth',own==='p'?.14:.1);sfx(44,.6,'square',.08)}
+function hitShip(sh,c){sh.hp-=c.dmg;burst(c.x,20,c.y);sfx(150,.25,'sawtooth',.12);
+ if(sh.hp<=0){sh.state='sinking';sh.st=0;G.sunk++;G.loot.push({x:sh.x,y:sh.y,gold:sh.bounty,name:sh.name});sfx(60,1.2,'sawtooth',.16);for(let i=0;i<10;i++)puff(sh.x+(Math.random()-.5)*120,30,sh.y+(Math.random()-.5)*40,'#2a2a2a',30,90,3,22);
+  if(sh.boss){G.bossDead=1;toast('🏆 The <b>Leviathan</b> is going down! Grab her treasure, then dive Blacktide\'s Hole.',0,7000)}
+  else toast('💥 You sank the <b>'+sh.name+'</b>! Sail to the floating chest to claim <b>'+sh.bounty+' gold</b>.'+(G.sunk%3===0&&G.sunk<=9?'<br><small>Your crew fits another cannon: bigger broadsides!</small>':''),0,6000);hud()}}
+function playerFire(){const b=G.boat;let tg=null,td=560;for(const sh of G.ships)if(sh.state==='sail'){const d=Math.hypot(sh.x-b.x,sh.y-b.y);if(d<td){td=d;tg=sh}}
+ const lvl=Math.min(G.sunk,9),n=2+Math.floor(lvl/3),dmg=22+2*lvl;G.reload=1.9;
+ if(tg&&Math.abs(Math.sin(wrapA(Math.atan2(tg.y-b.y,tg.x-b.x)-b.a)))>.5){const T=td/260,v=G.wind.spd*2.7*(tg.pol||.6),px=tg.x+Math.cos(tg.a)*v*T,py=tg.y+Math.sin(tg.a)*v*T;
+  for(let k=0;k<n;k++){const o=(k-(n-1)/2)*20,sp=(k-(n-1)/2)*34;shoot(b.x+Math.cos(b.a)*o,b.y+Math.sin(b.a)*o,px+Math.cos(tg.a)*sp+(Math.random()-.5)*22,py+Math.sin(tg.a)*sp+(Math.random()-.5)*22,'p',dmg)}}
+ else{for(const s of[1,-1])shoot(b.x,b.y,b.x-Math.sin(b.a)*s*300,b.y+Math.cos(b.a)*s*300,'p',dmg);if(tg&&!G.aimTip){G.aimTip=1;toast('🎯 Your cannons point out of the sides of the ship. Turn until the enemy is off your beam, then fire.',0,5500)}}}
+function playerSunk(){const b=G.boat,lost=Math.floor(G.gold*.3);G.gold-=lost;G.hp=100;G.balls=[];b.x=G.home.x;b.y=G.home.y;b.vx=b.vy=b.spd=0;G.calm=0;hud();hudHull();
+ dlg('<h2>🌊 Your ship is sunk!</h2><p>The crew cling to the wreckage until a turtle fisherman tows you home. The shipwrights patch her up - but '+(lost?'<b>'+lost+' gold</b> went to the bottom.':'at least you had no gold to lose.')+'</p><p>Tip: keep moving, stay off the enemy\'s beam, and fire when she is off yours. Your hull repairs itself when you stay out of battle for a while.</p>','Back to sea')}
+function hudHull(){const h=Math.max(0,Math.round(G.hp));$('cHull').textContent='🛡️ Hull '+h+'%';$('cHull').style.background=h<35?'rgba(170,20,20,.85)':''}
+
 
 /* ---------- dive logic ---------- */
 function floorY(sc,x){const s=sc.site;let y=s.D-55-22*Math.sin(x/170+s.D)-12*Math.sin(x/53);
@@ -612,7 +660,7 @@ function startDive(s){
  const add=(kind,sp,x,y,o)=>{const c=Object.assign({kind,sp,x,y,x0:x,y0:y,dir:R()<.5?1:-1,t:R()*9,ph:R()*9,mv:'swim',spd:30,rng:120,bob:8,r:26,hz:0},o||{});c.z=c.z!==undefined?c.z:(c.hz||c.net||c.tent)?0:20-R()*120;sc.cr.push(c)};
  const fishO=(c1,c2,L,Hh,o)=>Object.assign({c1,c2,L,Hh},o);
  const junk=n=>{for(let i=0;i<n;i++){const x=300+R()*(s.W-500);sc.trash.push({x,y:fy(x)-14-R()*(s.id==='hole'?10:90),k:R()*3|0})}};
- const snap=fishO('#a59588','#7c6a5e',26,11),tarp=fishO('#c9d3da','#93a2ad',92,26,{spd:34,rng:260,r:0,th:8}),tang=fishO('#2a5fd0','#f0d040',24,16,{school:6,spd:34,rng:220,r:0}),grp=fishO('#7c7a4a','#5d5b36',130,66,{spd:8,rng:80,r:0,spots:1,th:21,z:-40}),ytail=fishO('#c9d3da','#f5d33b',30,11,{school:6,spd:38,rng:260,r:0}),logger={spd:22,rng:420,bob:26,r:0,z:-60,shell:'#9a5a2a',skin:'#c9a05a',sc:1.35};
+ const snap=fishO('#a59588','#7c6a5e',26,11),tarp=fishO('#c9d3da','#93a2ad',92,26,{spd:34,rng:260,r:0,th:8}),tang=fishO('#2a5fd0','#f0d040',24,16,{school:6,spd:34,rng:220,r:0}),grp=fishO('#7c7a4a','#5d5b36',130,66,{spd:8,rng:80,r:0,spots:1,th:21,z:-40}),ytail=fishO('#c9d3da','#f5d33b',30,11,{school:6,spd:38,rng:260,r:0}),logger={spd:22,rng:420,bob:26,r:0,z:-60,shell:'#9a5a2a',skin:'#c9a05a',sc:1.35},mahi=fishO('#d8c83a','#3a9a6a',72,27,{spd:52,rng:420,r:0,th:6,z:-50}),manta={spd:30,rng:650,bob:30,r:0,z:-240,manta:1};
  const mow=(x)=>add('manowar','manowar',x,9,{mv:'float',spd:6,rng:90,tent:1});
  if(s.id==='mangrove'){
   for(let i=0;i<80;i++){const x=R()*s.W;sc.decor.push({k:'root',x,w:(R()-.5)*90,z:R()<.55?-60-R()*260:R()<.6?-12-R()*40:26+R()*22})}
@@ -650,6 +698,7 @@ function startDive(s){
   {const x=1750;add('octopus','octopus',x,fy(x)-10,{mv:'still',r:0,z:14})}
   for(let i=0;i<3;i++){const x=700+i*600;add('lion','lionfish',x,fy(x)-110-R()*60,{spd:14,rng:70,hz:1,r:26,net:1})}
   add('gshark','reefshark',1300,300,{spd:65,rng:500,bob:24,hz:1,r:36});
+  for(let i=0;i<4;i++){const x=520+i*480+R()*120;add('urchin','urchin',x,fy(x)-8,{mv:'still',hz:1,r:15})}
   add('moray','moray',2150,fy(2150)-20,{mv:'still',hz:1,r:44,dir:-1});
   for(let i=0;i<2;i++){const x=900+i*800;add('lobster','lobster',x,fy(x)-9,{mv:'still',r:0,z:16})}
   add('turtle','turtle',1300,150,{spd:28,rng:400,bob:30,r:0});
@@ -662,7 +711,8 @@ function startDive(s){
   add('shark','nurse',hx-280,fy(hx-280)-20,{mv:'still',r:0,z:-30});
   add('fish','grouper',hx+820,fy(hx+820)-150,grp);
   add('eagleray','eagleray',hx+300,s.D*.28,{spd:40,rng:600,bob:26,r:0,z:-80});
-  add('turtle','loggerhead',hx+700,s.D*.3,logger);add('fish','yellowtail',hx+900,s.D*.45,ytail);
+  add('turtle','loggerhead',hx+700,s.D*.3,logger);add('fish','mahi',hx+400,s.D*.3,mahi);add('eagleray','manta',hx+900,s.D*.22,manta);
+  if(s.id==='bonus'&&!s.locked)add('gshark','tigershark',hx+900,s.D*.5,{spd:50,rng:420,bob:18,hz:1,r:40,tiger:1});add('fish','yellowtail',hx+900,s.D*.45,ytail);
   if(s.locked&&s.id==='bonus')add('whaleshark','whaleshark',hx+500,s.D*.4,{spd:16,rng:700,bob:20,r:0,z:-330});
   {const x=hx+640;add('octopus','octopus',x,fy(x)-10,{mv:'still',r:0,z:20})}
   for(let i=0;i<4;i++)add('jelly','moonjelly',420+i*520,170+R()*190,{mv:'drift',hz:1,r:26});
@@ -680,19 +730,19 @@ function startDive(s){
   add('fish','grouper',930,720,Object.assign({},grp,{rng:60}));
   add('eagleray','eagleray',1000,200,{spd:40,rng:600,bob:26,r:0,z:-80});
   add('squid','squid',500,210,{spd:22,rng:200,bob:14,r:0});
-  add('whaleshark','whaleshark',1000,330,{spd:16,rng:700,bob:20,r:0,z:-330});add('turtle','loggerhead',600,200,logger);
+  add('whaleshark','whaleshark',1000,330,{spd:16,rng:700,bob:20,r:0,z:-330});add('turtle','loggerhead',600,200,logger);add('fish','mahi',1400,190,mahi);add('eagleray','manta',700,260,manta);add('gshark','tigershark',1100,620,{spd:50,rng:260,bob:18,hz:1,r:40,tiger:1});
   mow(700);mow(1500);
   for(let i=0;i<2;i++)add('lion','lionfish',500+i*1100,220,{spd:12,rng:60,hz:1,r:26,net:1});
   for(let i=0;i<4;i++)add('fish','parrotfish',300+i*450,180+R()*60,fishO('#2fbf9f','#e95d8f',42,19,{spd:40,rng:160,r:0}));
   for(let i=0;i<8;i++){const a=i*.8,x=1100+Math.cos(a)*(40+i*9);sc.coins.push({x,y:fy(x)-18-i%3*14})}
   junk(3);sc.chest={x:1100,y:fy(1100)-24,kind:'hoard'};
  }
- G.dive=sc;G.mode='dive';buildDive(sc);hud();$('mini').style.display='none';$('airwrap').style.display='block';$('cZone').textContent=s.eco;
+ G.dive=sc;G.mode='dive';$('fire').style.display='none';buildDive(sc);hud();$('mini').style.display='none';$('airwrap').style.display='block';$('cZone').textContent=s.eco;
  dlg('<h2>'+s.icon+' '+s.name+'</h2><p><b>Ecosystem: '+s.eco+'</b></p><p>'+s.intro+'</p><ul><li>Watch your <b>air</b> - swim back up to the surface before it runs out.</li><li>Grab <b>trash</b> to earn eco points. Net invasive <b>lionfish</b> with Space (from behind - mind the spines!).</li><li>Keep off the coral and away from stingers and teeth.</li></ul>','Dive in!');
 }
 function hurt(sc,from,msg){if(sc.inv>0)return;sc.inv=1.6;sc.air=Math.max(0,sc.air-13);const a=Math.atan2(sc.y-from.y,sc.x-from.x);sc.vx=Math.cos(a)*420;sc.vy=Math.sin(a)*420;toast('💥 '+msg+' You lose some air.',1,3200);sfx(140,.3,'square')}
-const HMSG={gshark:'A shark bumps you to find out what you are!',upjelly:'Stung by an upside-down jellyfish!',ray:'A startled stingray whips its tail!',lion:'Ouch - lionfish spines are venomous!',moray:'The moray eel snaps at you!',cuda:'A barracuda charges past!',jelly:'Stung by a moon jellyfish!',manowar:'Zap! You brushed a man o\' war\'s tentacles!'};
-function endDive(msg){G.mode='surface';disposeDive();G.dive=null;$('mini').style.display='';$('airwrap').style.display='none';hud();prompt_('');if(msg)toast(msg)}
+const HMSG={urchin:'Ow! Sea urchin spines!',gshark:'A shark bumps you to find out what you are!',upjelly:'Stung by an upside-down jellyfish!',ray:'A startled stingray whips its tail!',lion:'Ouch - lionfish spines are venomous!',moray:'The moray eel snaps at you!',cuda:'A barracuda charges past!',jelly:'Stung by a moon jellyfish!',manowar:'Zap! You brushed a man o\' war\'s tentacles!'};
+function endDive(msg){G.mode='surface';$('fire').style.display='';G.balls=[];G.calm=0;disposeDive();G.dive=null;$('mini').style.display='';$('airwrap').style.display='none';hud();prompt_('');if(msg)toast(msg)}
 function updDive(dt){
  const sc=G.dive,s=sc.site,[ix,iy]=axis();
  // swimming: kick thrust against water drag, measured relative to the wave surge (which fades with depth)
@@ -714,7 +764,7 @@ function updDive(dt){
  for(const c of sc.cr){c.t+=dt;
   if(c.mv==='swim'||c.mv==='float'){c.x+=c.dir*c.spd*dt;if(c.x>c.x0+c.rng)c.dir=-1;if(c.x<c.x0-c.rng)c.dir=1;c.y=c.y0+Math.sin(c.t*1.2+c.ph)*(c.mv==='float'?1.5:c.bob)}
   else if(c.mv==='drift'){c.y=c.y0+Math.sin(c.t*.55+c.ph)*42;c.x=c.x0+Math.sin(c.t*.21+c.ph)*34}
-  const d=Math.hypot(c.x-sc.x,c.y-sc.y);if(d<(c.kind==='whaleshark'?380:200)||(c.tent&&Math.abs(c.x-sc.x)<200&&sc.y<260))discover(c.sp);
+  const d=Math.hypot(c.x-sc.x,c.y-sc.y);if(c.kind==='whaleshark'&&d<300)discover('remora');if(d<(c.kind==='whaleshark'||c.manta?380:200)||(c.tent&&Math.abs(c.x-sc.x)<200&&sc.y<260))discover(c.sp);
   if(c.net&&d<nd){nd=d;near=c}
   if(c.hz&&d<c.r+10)hurt(sc,c,HMSG[c.kind]||'Ouch!');
   if(c.tent&&Math.abs(c.x-sc.x)<17&&sc.y<c.y+112)hurt(sc,{x:c.x,y:sc.y-1},HMSG.manowar);
@@ -737,14 +787,14 @@ function updDive(dt){
 }
 function openChest(sc){
  sc.got=true;const s=sc.site;sfx(660,.15);setTimeout(()=>sfx(880,.15),120);setTimeout(()=>sfx(1320,.3),240);
- if(s.id==='bonus'){s.done=true;G.eco+=75;hud();dlg('<h2>☠️ Pirate relic found!</h2><p>The lid of the chest groans open. Inside: <b>'+s.relic+'</b>!</p><p>+75 points. Pirate wrecks explored: <b>'+WRECKS.filter(w=>w.done).length+' of '+WRECKS.length+'</b>. Swim back up to your airboat.</p>','Yo ho!');return}
+ if(s.id==='bonus'){s.done=true;G.eco+=75;hud();dlg('<h2>☠️ Pirate relic found!</h2><p>The lid of the chest groans open. Inside: <b>'+s.relic+'</b>!</p><p>+75 points. Pirate wrecks explored: <b>'+WRECKS.filter(w=>w.done).length+' of '+WRECKS.length+'</b>. Swim back up to your ship.</p>','Yo ho!');return}
  if(s.id==='hole'){G.eco+=100;G.pieces=5;win();return}
  G.pieces++;G.stage++;G.eco+=50;hud();
- dlg('<h2>🗺️ Map piece '+G.pieces+' of 4!</h2><div class="pieces">'+'🟫'.repeat(G.pieces)+'⬜'.repeat(4-G.pieces)+'</div><p>'+(s.id==='mangrove'?'Inside the barnacle-crusted bottle is a scrap of sailcloth, signed <b>B. Blacktide, 1733</b>.':s.id==='seagrass'?'Under the seat of the sunken skiff: an oilskin pouch with another scrap of the map.':s.id==='reef'?'A small iron-bound chest wedged in the reef holds the third piece.':'The captain\'s key turns with a clunk. Inside: the last piece!')+'</p><p class="clue">'+s.clue+'</p><p>+50 eco points. Swim back up to your airboat.</p>','Got it');
+ dlg('<h2>🗺️ Map piece '+G.pieces+' of 4!</h2><div class="pieces">'+'🟫'.repeat(G.pieces)+'⬜'.repeat(4-G.pieces)+'</div><p>'+(s.id==='mangrove'?'Inside the barnacle-crusted bottle is a scrap of sailcloth, signed <b>B. Blacktide, 1733</b>.':s.id==='seagrass'?'Under the seat of the sunken skiff: an oilskin pouch with another scrap of the map.':s.id==='reef'?'A small iron-bound chest wedged in the reef holds the third piece.':'The captain\'s key turns with a clunk. Inside: the last piece!')+'</p><p class="clue">'+s.clue+'</p><p>+50 eco points. Swim back up to your ship.</p>','Got it');
 }
 function win(){
- const n=Object.keys(G.found).length,rank=G.eco>=2300?'🏆 Reef Guardian':G.eco>=1200?'🥈 Keys Naturalist':'🥉 Treasure Hunter';
- dlg('<h1>💰 Treasure found!</h1><p>The lid creaks open on a heap of silver pieces of eight, emeralds and a golden compass - Captain Bonnie Blacktide\'s lost hoard, hidden since 1733.</p><p>But the real treasure of the Florida Keys is all around you: mangroves, seagrass, coral reef and open sea, each one depending on the others.</p><ul><li>Rank: <b>'+rank+'</b></li><li>Eco points: <b>'+G.eco+'</b></li><li>Species in journal: <b>'+n+' of '+NSP+'</b></li><li>Clue treasures: <b>'+CACHES.filter(c=>c.found).length+' of '+CACHES.length+'</b> · Pirate wrecks: <b>'+WRECKS.filter(w=>w.done).length+' of '+WRECKS.length+'</b> · Pirate ships: <b>'+G.ships.filter(k=>k.looted).length+' of '+G.ships.length+'</b> · Doubloons: <b>'+G.stats.coins+'</b></li><li>Trash removed: <b>'+G.stats.trash+'</b> · Lionfish netted: <b>'+G.stats.lion+'</b></li><li>Oopses (coral bumps, speeding near manatees): <b>'+G.stats.oops+'</b></li></ul>','Play again',()=>{endDive();newGame();intro()});
+ const n=Object.keys(G.found).length,rank=G.eco+G.gold>=3200?'🏆 Pirate Legend of the Keys':G.eco+G.gold>=1800?'🥈 Fearsome Captain':'🥉 Treasure Hunter';
+ dlg('<h1>💰 Treasure found!</h1><p>The lid creaks open on a heap of silver pieces of eight, emeralds and a golden compass - Captain Bonnie Blacktide\'s lost hoard, hidden since 1733.</p><p>But the real treasure of the Florida Keys is all around you: mangroves, seagrass, coral reef and open sea, each one depending on the others.</p><ul><li>Rank: <b>'+rank+'</b></li><li>Eco points: <b>'+G.eco+'</b></li><li>Species in journal: <b>'+n+' of '+NSP+'</b></li><li>Clue treasures: <b>'+CACHES.filter(c=>c.found).length+' of '+CACHES.length+'</b> · Pirate wrecks: <b>'+WRECKS.filter(w=>w.done).length+' of '+WRECKS.length+'</b> · Pirate ships sunk: <b>'+G.sunk+'</b> · Gold won in battle: <b>'+G.gold+'</b> · Doubloons: <b>'+G.stats.coins+'</b></li><li>Trash removed: <b>'+G.stats.trash+'</b> · Lionfish netted: <b>'+G.stats.lion+'</b></li><li>Oopses (coral bumps, speeding near manatees): <b>'+G.stats.oops+'</b></li></ul>','Play again',()=>{endDive();newGame();intro()});
 }
 
 /* ================= dive scene (3D) ================= */
@@ -854,7 +904,7 @@ let camA=-1.2;
 function drawSurface(dt){
  const b=G.boat,t=G.t;renderer.toneMapping=THREE.ACESFilmicToneMapping;
  if(G.cam==='chase'){let da=b.a-camA;while(da>PI)da-=TAU;while(da<-PI)da+=TAU;camA+=da*(1-Math.pow(.03,dt));const f=camera.aspect<1?74:58;if(camera.fov!==f){camera.fov=f;camera.updateProjectionMatrix()}
-  const cx=Math.cos(camA),cz=Math.sin(camA);camera.position.set(b.x-cx*178,80,b.y-cz*178);camera.lookAt(b.x+cx*70,12,b.y+cz*70)}
+  const cx=Math.cos(camA),cz=Math.sin(camA);camera.position.set(b.x-cx*250,112,b.y-cz*250);camera.lookAt(b.x+cx*90,30,b.y+cz*90)}
  else{camA=-PI/2;if(camera.fov!==46){camera.fov=46;camera.updateProjectionMatrix()}const k=clamp(1.35/camera.aspect,1,2);camera.position.set(b.x,440*k,b.y+330*k);camera.lookAt(b.x,0,b.y-25)}
  S3.sky.position.set(camera.position.x,0,camera.position.z);
  S3.sun.target.position.set(b.x,0,b.y);S3.sun.position.copy(S3.sun.target.position).addScaledVector(S3.sunDir,1000);
@@ -864,14 +914,18 @@ function drawSurface(dt){
  // buoyancy: a hull sits at the average water height under it and tilts with the slope of the wave
  const floatOn=(o,x,z,a,L,Wd,k)=>{const ca=Math.cos(a),sa=Math.sin(a),hb=waveH(x+ca*L,z+sa*L,t),hs=waveH(x-ca*L,z-sa*L,t),hr=waveH(x-sa*Wd,z+ca*Wd,t),hl=waveH(x+sa*Wd,z-ca*Wd,t);
   o.py+=((hb+hs+hr+hl)/4-o.py)*k;o.pp+=(Math.atan2(hb-hs,2*L)-o.pp)*k;o.pr+=(Math.atan2(hl-hr,2*Wd)-o.pr)*k};
- const sp=Math.hypot(b.vx,b.vy),bm=S3.boat,kf=1-Math.pow(.0005,dt||.016);floatOn(b,b.x,b.y,b.a,24,11,kf);
- bm.rotation.order='YXZ';bm.position.set(b.x,1.2+b.py,b.y);bm.rotation.set(b.pr,-b.a,b.pp+sp/235*.07);bm.userData.fan.rotation.x=b.fan;
+ const bm=S3.boat,kf=1-Math.pow(.02,dt||.016),prw=wrapA(wd.dir-b.a);floatOn(b,b.x,b.y,b.a,44,13,kf);
+ bm.position.set(b.x,-1.2+b.py,b.y);bm.rotation.set(b.pr+Math.sin(prw)*wd.spd/15*.06,-b.a,b.pp);
+ {const trim=clamp(prw,-1.05,1.05),full=.3+.7*clamp(wd.spd/14*(b.pol||1),0,1.3);for(const r of bm.userData.rigs){r.rotation.y=-trim;r.scale.x=full}bm.userData.flagP.rotation.y=-prw+Math.sin(t*6)*.12}
+ for(const p of S3.fx){const u=p.userData;if(u.l>0){u.l-=dt;const k=1-u.l/u.m;u.vy-=u.g*dt;p.position.x+=(u.vx+wdx*wd.spd*2*u.w)*dt;p.position.y+=u.vy*dt;p.position.z+=(u.vz+wdz*wd.spd*2*u.w)*dt;const sz=u.s0+(u.s1-u.s0)*k;p.scale.set(sz,sz,1);p.material.opacity=(1-k)*.85}else p.visible=false}
+ S3.loot.forEach((g,i)=>{const l=G.loot[i];g.visible=!!l;if(l){g.position.set(l.x,waveH(l.x,l.y,t)-1,l.y);g.rotation.set(Math.sin(t*1.7+i)*.12,t*.3+i,Math.cos(t*1.3+i)*.12)}});
  for(const c of S3.clouds){c.position.x+=wdx*wd.spd*.9*dt;c.position.z+=wdz*wd.spd*.9*dt;const ox=c.position.x-WW/2,oz=c.position.z-WH/2;if(ox*ox+oz*oz>9.4e7){c.position.x=WW/2-ox*.98;c.position.z=WH/2-oz*.98}}
  for(const w of S3.wake){const l=w.userData.l||0;if(l>0){w.userData.l=l-dt*.7;w.material.opacity=l*.6;w.scale.setScalar(3+(1-l)*11);w.position.y=waveH(w.position.x,w.position.z,t)+.8}else w.material.opacity=0}
  for(const e of G.ents){const m=e.m;
   switch(e.kind){
    case'manatee':m.position.set(e.x,0,e.y);m.userData.b.rotation.y=-e.a;break;
    case'dolphin':{const j=Math.sin(t*1.6+e.ph);m.position.set(e.x,j>0?j*17-3:-5,e.y);m.rotation.set(0,-(e.a+PI/2),j>-.2?Math.cos(t*1.6+e.ph)*.75:0);break}
+   case'sailfish':{const j=Math.sin(t*1.1+e.ph);m.position.set(e.x,j>.5?(j-.5)*46-2:-4,e.y);m.rotation.set(0,-(e.a+PI/2),j>.3?Math.cos(t*1.1+e.ph)*.8:0);break}
    case'flyfish':{const j=Math.sin(t*2.2+e.ph);m.position.set(e.x,j>0?j*14:-3,e.y);m.rotation.set(0,-(e.a+PI/2),j>0?Math.cos(t*2.2+e.ph)*.3:0);break}
    case'fin':m.position.set(e.x,-9.5,e.y);m.rotation.y=-(e.a+PI/2);m.userData.tail.rotation.y=Math.sin(t*4+e.ph)*.4;break;
    case'turtle':m.position.set(e.x,-4,e.y);m.rotation.y=e.ph+Math.sin(t*.2);m.userData.anim(m,e,t*.5);break;
@@ -879,10 +933,10 @@ function drawSurface(dt){
    case'frigate':m.scale.setScalar(.62);m.position.set(e.x,110,e.y);m.rotation.set(Math.sin(t*.5+e.ph)*.15,-e.a,0);break;
    case'croc':m.position.set(e.x,-1.5,e.y);m.rotation.y=-e.a;m.userData.tail.rotation.y=Math.sin(t+e.ph)*.3;break;
   }}
- G.ships.forEach((sh,i)=>{const g=S3.ships[i],relw=wrapA(wd.dir-sh.a);if(sh.py===undefined)sh.py=sh.pp=sh.pr=0;floatOn(sh,sh.x,sh.y,sh.a,80,22,1-Math.pow(.05,dt||.016));
-  g.position.set(sh.x,-2+sh.py,sh.y);g.rotation.set(sh.pr+Math.sin(relw)*wd.spd/15*.07,-sh.a,sh.pp);g.userData.flag.material.map=sh.looted?FLAG.done:FLAG.skull;
+ S3.ships.forEach((g,i)=>{const sh=G.ships[i];g.visible=!!sh&&sh.state!=='gone';if(!g.visible)return;const relw=wrapA(wd.dir-sh.a),sk=sh.state==='sinking'?sh.st:0;floatOn(sh,sh.x,sh.y,sh.a,80,22,1-Math.pow(.05,dt||.016));
+  g.position.set(sh.x,-2+sh.py-sk*sk*1.5,sh.y);g.rotation.set(sh.pr+Math.sin(relw)*wd.spd/15*.07+sk*.09,-sh.a,sh.pp-sk*.05);
   const trim=clamp(relw,-1.05,1.05),full=.25+.75*clamp(wd.spd/14*(sh.pol||1),0,1.3);for(const r of g.userData.rigs){r.rotation.y=-trim;r.scale.x=full}g.userData.flagP.rotation.y=-relw+Math.sin(t*6+i)*.12});
- S3.flash.visible=false;S3.balls.forEach((m,i)=>{const c=G.balls[i];m.visible=!!c;if(c){m.position.set(c.x,c.h,c.y);if(c.ft>0){S3.flash.visible=true;S3.flash.position.set(c.fx,26,c.fy)}}});
+ G.flashT=(G.flashT||0)-dt;S3.flash.visible=G.flashT>0;S3.balls.forEach((m,i)=>{const c=G.balls[i];m.visible=!!c;if(c)m.position.set(c.x,c.h,c.y)});
  S3.bell.position.y=waveH(LM.bell.x,LM.bell.y,t);S3.bell.rotation.z=Math.sin(t*1.3)*.09*waveAmp;S3.bell.rotation.x=Math.cos(t*1.1)*.06*waveAmp;
  S3.sites.forEach((g,i)=>{g.visible=i<=G.stage;const done=i<G.stage;g.userData.flag.material.map=done?FLAG.done:FLAG.dive;g.userData.ball.material=M(done?'#99aaaa':'#ff7a2a');g.userData.ring.visible=!done;g.userData.beam.visible=i===G.stage&&G.cam==='chase';g.userData.ring.scale.setScalar(42+Math.sin(t*3)*6);g.position.y=waveH(SITES[i].x,SITES[i].y,t);g.userData.flag.rotation.y=-wd.dir;g.userData.flag.position.set(15*wdx,48,15*wdz)});
  S3.wrecks.forEach((g,i)=>{const w=WRECKS[i];g.userData.flag.material.map=w.done?FLAG.done:FLAG.skull;g.position.y=waveH(w.x,w.y,t);g.userData.flag.rotation.y=-wd.dir;g.userData.flag.position.set(15*wdx,48,15*wdz)});
@@ -894,14 +948,18 @@ function drawSurface(dt){
  if(s){_v.set(s.x,0,s.y).project(camera);const sx=(_v.x+1)/2*W,sy=(1-_v.y)/2*H;if(_v.z>1||sx<30||sy<90||sx>W-30||sy>H-90){_v.set(b.x,10,b.y).project(camera);const bx=(_v.x+1)/2*W,by=(1-_v.y)/2*H,a=Math.atan2(s.y-b.y,s.x-b.x)-camA-PI/2,r=Math.min(W,H)*.2;
    ctx.save();ctx.translate(bx+Math.cos(a)*r,by+Math.sin(a)*r);ctx.rotate(a);ctx.fillStyle='#ffd34d';ctx.strokeStyle='#5a3d00';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(18,0);ctx.lineTo(-10,-12);ctx.lineTo(-4,0);ctx.lineTo(-10,12);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore();
    ctx.fillStyle='#fff';ctx.font='bold 12px Verdana';ctx.textAlign='center';ctx.strokeStyle='rgba(0,0,0,.6)';ctx.lineWidth=3;const tx=bx+Math.cos(a)*(r+30),ty=by+Math.sin(a)*(r+30)+4,dd=Math.round(Math.hypot(s.x-b.x,s.y-b.y)/10)+' m';ctx.strokeText(dd,tx,ty);ctx.fillText(dd,tx,ty)}}
+ for(const sh of G.ships)if(sh.state==='sail'){const d=Math.hypot(sh.x-b.x,sh.y-b.y);if(d>900)continue;_v.set(sh.x,sh.boss?250:185,sh.y).project(camera);if(_v.z>1)continue;const x=(_v.x+1)/2*W,y=(1-_v.y)/2*H,w=sh.boss?110:74;
+   ctx.fillStyle='rgba(0,0,0,.6)';ctx.fillRect(x-w/2-2,y-2,w+4,11);ctx.fillStyle=sh.boss?'#c040ff':'#e0291f';ctx.fillRect(x-w/2,y,w*Math.max(0,sh.hp/sh.max),7);ctx.fillStyle='#fff';ctx.font='bold 11px Verdana';ctx.textAlign='center';ctx.strokeStyle='rgba(0,0,0,.7)';ctx.lineWidth=3;ctx.strokeText(sh.name,x,y-6);ctx.fillText(sh.name,x,y-6)}
+ if(G.hitT>0){const v=ctx.createRadialGradient(W/2,H/2,Math.min(W,H)*.3,W/2,H/2,Math.max(W,H)*.7);v.addColorStop(0,'rgba(200,0,0,0)');v.addColorStop(1,'rgba(200,0,0,'+(G.hitT*1.6).toFixed(2)+')');ctx.fillStyle=v;ctx.fillRect(0,0,W,H)}
+ if(G.reload>0){ctx.fillStyle='rgba(0,0,0,.5)';ctx.fillRect(W/2-50,H-74,100,7);ctx.fillStyle='#ffd34d';ctx.fillRect(W/2-50,H-74,100*(1-G.reload/1.9),7)}
  drawRadar();
 }
 function updWater(cx,cz,t){ // move the wave grid with the camera and set every vertex to the true wave height and slope
- const W3=S3.water,P=W3.g.attributes.position.array,N=W3.g.attributes.normal.array,U=W3.g.attributes.uv.array,nw=WV.length;
+ const W3=S3.water,K=W3.g.attributes.color.array,P=W3.g.attributes.position.array,N=W3.g.attributes.normal.array,U=W3.g.attributes.uv.array,nw=WV.length;
  for(let i=0;i<W3.n;i++){const x=cx+W3.ox[i],z=cz+W3.oz[i],far=Math.max(Math.abs(W3.ox[i]),Math.abs(W3.oz[i]));let h=0,dx=0,dz=0;
   if(far<2600){const f=waveAmp*depthF(x,z)*(far>1800?(2600-far)/800:1);for(let k=0;k<nw;k++){const w=WV[k],p=w.kx*x+w.kz*z-w.w*t+w.ph,c=Math.cos(p)*w.a*f;h+=Math.sin(p)*w.a*f;dx+=c*w.kx;dz+=c*w.kz}}
-  const j=i*3,l=1/Math.hypot(dx,1,dz);P[j]=x;P[j+1]=h;P[j+2]=z;N[j]=-dx*l;N[j+1]=l;N[j+2]=-dz*l;U[i*2]=x/95;U[i*2+1]=z/95}
- W3.g.attributes.position.needsUpdate=W3.g.attributes.normal.needsUpdate=W3.g.attributes.uv.needsUpdate=true}
+  const j=i*3,l=1/Math.hypot(dx,1,dz);P[j]=x;P[j+1]=h;P[j+2]=z;N[j]=-dx*l;N[j+1]=l;N[j+2]=-dz*l;U[i*2]=x/95;U[i*2+1]=z/95;const cr=clamp((h-4.2)/6,0,1);K[j]=1+7*cr;K[j+1]=1+1.1*cr;K[j+2]=1+.5*cr}
+ W3.g.attributes.color.needsUpdate=W3.g.attributes.position.needsUpdate=W3.g.attributes.normal.needsUpdate=W3.g.attributes.uv.needsUpdate=true}
 function drawRadar(){
  const b=G.boat,t=G.t,m=$('mini'),g=m.getContext('2d'),N=m.width,span=1300,k=N/span;
  g.fillStyle='#0b4f8a';g.fillRect(0,0,N,N);
@@ -910,7 +968,8 @@ function drawRadar(){
  const blip=(x,y,col,r,edge)=>{let dx=(x-b.x)*k,dy=(y-b.y)*k;const d=Math.hypot(dx,dy),mx=N/2-12;if(d>mx){if(!edge)return;dx*=mx/d;dy*=mx/d}g.fillStyle=col;g.strokeStyle='#fff';g.lineWidth=2.5;g.beginPath();g.arc(N/2+dx,N/2+dy,r,0,TAU);g.fill();g.stroke()};
  for(const w of WRECKS)blip(w.x,w.y,w.done?'#8fe08f':'#111',7);
  for(const c of CACHES)if(c.found)blip(c.x,c.y,'#ffd34d',6);
- for(const sh of G.ships)blip(sh.x,sh.y,sh.looted?'#8fe08f':'#a020c0',8);
+ for(const sh of G.ships)if(sh.state==='sail')blip(sh.x,sh.y,sh.boss?'#c040ff':'#e0291f',sh.boss?10:8,sh.boss);
+ for(const l of G.loot)blip(l.x,l.y,'#ffd34d',6,true);
  SITES.forEach((p,i)=>{if(i<G.stage)blip(p.x,p.y,'#8fe08f',7);else if(i===G.stage)blip(p.x,p.y,'#ff3b2a',9+Math.sin(t*4)*2,true)});
  g.save();g.translate(N/2,N/2);g.rotate(b.a);g.fillStyle='#fff';g.strokeStyle='#000';g.lineWidth=2.5;g.beginPath();g.moveTo(15,0);g.lineTo(-10,-9);g.lineTo(-5,0);g.lineTo(-10,9);g.closePath();g.fill();g.stroke();g.restore();
  g.fillStyle='#fff';g.font='bold 20px Verdana';g.textAlign='center';g.strokeStyle='rgba(0,0,0,.7)';g.lineWidth=4;g.strokeText('N',N/2,26);g.fillText('N',N/2,26);
@@ -921,7 +980,7 @@ function openMap(){
   if(lab){g.font='bold 11px Verdana';g.strokeStyle='rgba(0,0,0,.75)';g.lineWidth=3;g.strokeText(lab,x*k,y*k-13);g.fillStyle='#fff';g.fillText(lab,x*k,y*k-13)}};
  WRECKS.forEach(w=>mark(w.x,w.y,w.done?'✓':'☠',w.done?'#3a8a4a':'#111',w.done?w.name.replace('Wreck of the ',''):''));
  CACHES.forEach(c=>{if(c.found)mark(c.x,c.y,'★','#b98a12',c.lm)});
- G.ships.forEach(sh=>mark(sh.x,sh.y,sh.looted?'✓':'⛵',sh.looted?'#3a8a4a':'#8a1fa8',sh.looted?'':'Pirate ship'));
+ G.ships.forEach(sh=>{if(sh.state==='sail')mark(sh.x,sh.y,'⛵',sh.boss?'#8a1fa8':'#b01818',sh.name)});G.loot.forEach(l=>mark(l.x,l.y,'💰','#b98a12','Treasure'));
  SITES.forEach((p,i)=>{if(i<G.stage)mark(p.x,p.y,'✓','#3a8a4a',p.name);else if(i===G.stage)mark(p.x,p.y,'!','#e0291f','Next dive')});
  g.save();g.translate(b.x*k,b.y*k);g.rotate(b.a);g.fillStyle='#ffd34d';g.strokeStyle='#000';g.lineWidth=2;g.beginPath();g.moveTo(13,0);g.lineTo(-9,-8);g.lineTo(-4,0);g.lineTo(-9,8);g.closePath();g.fill();g.stroke();g.restore();
  $('mp').classList.add('on');G.paused=true;
@@ -934,12 +993,12 @@ function frame(ts){
  const raw=(ts-last)/1000||0,dt=Math.min(.05,raw);last=ts;
  if(!G.paused&&!window.__noAdapt&&raw<1){fWarm+=raw;if(fWarm>4){fAcc+=raw;fN++;if(fAcc>2.5){const fps=fN/fAcc;fAcc=fN=0;if(fps<24&&QL<3){QL++;if(QL===1){S3.sun.castShadow=false}else{PRmax=QL===2?1:.7;resize()}}}}}
  if(!G.paused){G.t+=dt;G.cool-=dt;updWind(dt);if(G.mode==='surface')updSurface(dt);else updDive(dt)}
- actQ=false;
+ actQ=fireQ=false;
  if(G.mode==='dive'&&G.dive&&D3)drawDive();else drawSurface(dt);
  drawJoy();requestAnimationFrame(frame);
 }
 function intro(){
- dlg('<h1>🏝️ Keys Treasure Quest</h1><p>In 1733 the pirate captain <b>Bonnie Blacktide</b> tore her treasure map into four pieces and hid them across the <b>Florida Keys</b> - in the mangroves, the seagrass, the coral reef and a sunken galleon.</p><p>Skim the shallows in your <b>airboat</b>, <b>scuba dive</b> at each flagged site, and piece the map together. Along the way, fill your field journal with the wildlife of each ecosystem and leave the Keys cleaner than you found them.</p><ul><li><b>Drive the airboat:</b> <kbd>A</kbd>/<kbd>D</kbd> or ←/→ to steer, <kbd>W</kbd>/↑ to go, <kbd>S</kbd>/↓ to brake - or drag anywhere on a touch screen. Prefer the old top-down view? Press <kbd>V</kbd> or tap 🎥.</li><li><b>Action:</b> <kbd>Space</kbd> or the yellow button · <b>Map:</b> <kbd>M</kbd> or tap the radar · <b>Journal:</b> <kbd>J</kbd> · <b>Clues:</b> <kbd>C</kbd></li><li>Slow down inside the yellow rings - manatees!</li><li><b>💨 Real physics:</b> the wind shifts and gusts. It builds waves offshore, pushes your airboat, and fills the sails of the pirate ships. Underwater, the deeper you dive the faster you use air.</li><li><b>📜 Clues:</b> ten riddles lead to treasures the crew hid near landmarks - a lighthouse, a skull-shaped rock and more. No arrow for those: read the clue and explore.</li><li><b>☠️ Wrecks:</b> five pirate shipwrecks (black skull flags) hold relics and doubloons - but sharks guard them.</li><li><b>🏴‍☠️ Pirate ships:</b> four ghost ships sail the deep water. Dodge their cannonballs and sneak up behind the stern to grab their loot.</li></ul><p class="clue">An old conch fisherman whispers: "Start where the trees walk on water, out west in the bay."</p>','Cast off!');
+ dlg('<h1>🏝️ Keys Treasure Quest</h1><p>In 1733 the pirate captain <b>Bonnie Blacktide</b> tore her treasure map into four pieces and hid them across the <b>Florida Keys</b> - in the mangroves, the seagrass, the coral reef and a sunken galleon.</p><p>You are the captain of a fast pirate sloop. <b>Fight rival pirate ships</b> with your broadside cannons and take the treasure they drop, <b>scuba dive</b> at each flagged site to piece the map together, and sink the dreaded <b>Leviathan</b> that guards the final hoard.</p><ul><li><b>Sail the ship:</b> <kbd>A</kbd>/<kbd>D</kbd> or ←/→ to steer, <kbd>W</kbd>/↑ to go, <kbd>S</kbd>/↓ to brake - or drag anywhere on a touch screen. Prefer the old top-down view? Press <kbd>V</kbd> or tap 🎥.</li><li><b>⚔️ Fight:</b> your cannons fire sideways. Turn so the enemy is off your side and press <kbd>F</kbd> (or Space, or 🔥). Watch your 🛡️ hull - it repairs when you stay out of battle.</li><li><b>Action:</b> <kbd>Space</kbd> or the yellow button · <b>Map:</b> <kbd>M</kbd> or tap the radar · <b>Journal:</b> <kbd>J</kbd> · <b>Clues:</b> <kbd>C</kbd></li><li>Slow down inside the yellow rings - manatees!</li><li><b>💨 Real physics:</b> the wind shifts and gusts. It builds waves offshore and drives every ship - you sail fastest with the wind on your side and slowest straight into it. Underwater, the deeper you dive the faster you use air.</li><li><b>📜 Clues:</b> ten riddles lead to treasures the crew hid near landmarks - a lighthouse, a skull-shaped rock and more. No arrow for those: read the clue and explore.</li><li><b>☠️ Wrecks:</b> five pirate shipwrecks (black skull flags) hold relics and doubloons - but sharks guard them.</li><li><b>💰 Gold:</b> every rival you sink leaves a floating chest. New rivals keep coming, each tougher and richer than the last.</li></ul><p class="clue">An old conch fisherman whispers: "Start where the trees walk on water, out west in the bay."</p>','Cast off!');
 }
 G=null;genWorld();placeLandmarks();placeSites();paintWorld();buildSurface();newGame();intro();requestAnimationFrame(frame);
 window.__game={get G(){return G},renderer,S3,SITES,WRECKS,CACHES,LM,startDive,solid,tileAt};
