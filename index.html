@@ -27,6 +27,7 @@ button.chip:hover{background:rgba(20,70,110,.9)}
 #prompt{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);display:none;background:#ffd34d;color:#3a2600;border:0;border-bottom:4px solid #b98a12;border-radius:14px;padding:13px 22px;font:bold 16px Verdana,sans-serif;cursor:pointer;white-space:nowrap;max-width:94vw}
 #prompt small{opacity:.65;font-weight:normal}
 #fire{position:fixed;right:16px;bottom:18px;width:74px;height:74px;border-radius:50%;border:0;border-bottom:4px solid #7a1a10;background:#d8432e;font-size:34px;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,.5);z-index:2}
+.dvb{position:fixed;right:16px;width:70px;height:70px;border-radius:16px;border:2px solid rgba(255,255,255,.6);background:rgba(6,30,52,.7);color:#fff;font-size:30px;cursor:pointer;display:none;z-index:2;touch-action:none}
 #toast{position:fixed;left:50%;bottom:84px;transform:translate(-50%,20px);opacity:0;transition:.3s;background:rgba(6,30,52,.92);border:1px solid #7fe3c0;border-radius:10px;padding:9px 13px;font-size:13px;line-height:1.4;width:min(440px,92vw);pointer-events:none;text-align:center;z-index:3}
 #toast.on{opacity:1;transform:translate(-50%,0)}
 #toast small{opacity:.88}
@@ -73,6 +74,8 @@ kbd{background:#fff;border:1px solid #a98;border-radius:4px;padding:1px 5px;font
 <div id="airwrap"><span id="airlab">AIR</span><div id="airbar"><div id="airfill"></div></div></div>
 <button id="prompt"></button>
 <button id="fire" title="Fire broadside (F)">🔥</button>
+<button class="dvb" id="dvUp" title="Rise (R)" style="bottom:104px">▲</button>
+<button class="dvb" id="dvDn" title="Sink (F)" style="bottom:22px">▼</button>
 <div id="toast"></div>
 <div class="modal" id="dlg"><div class="card"><div id="dlgBody"></div><button class="go" id="dlgBtn">OK</button></div></div>
 <div class="modal" id="jr"><div class="card" style="width:min(820px,100%)"><h2>📖 Field Journal</h2><p id="jsum"></p><div id="jlist"></div><button class="go" id="jClose">Close</button></div></div>
