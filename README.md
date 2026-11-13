@@ -1,6 +1,6 @@
 # Keys Treasure Quest
 
-A 3D browser game set in the Florida Keys. Pilot an airboat through the mangroves, seagrass flats and reef, scuba dive at flagged sites, and collect the four pieces of a pirate treasure map. Along the way: explore three bonus pirate shipwrecks, solve ten riddle clues that lead to treasures hidden near landmarks, and fill a field journal with 51 species from each ecosystem.
+A 3D browser game set in the Florida Keys. Pilot an airboat through the mangroves, seagrass flats and reef, scuba dive at flagged sites, and collect the four pieces of a pirate treasure map. Along the way: explore five bonus pirate shipwrecks, outsmart four sailing pirate ships that fire cannonballs, solve ten riddle clues that lead to treasures hidden near landmarks, and fill a field journal with 51 species from each ecosystem.
 
 Open `index.html` in a browser to play (it needs `game.js` and `three.min.js` beside it).
 
