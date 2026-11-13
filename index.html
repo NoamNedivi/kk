@@ -49,6 +49,7 @@ kbd{background:#fff;border:1px solid #a98;border-radius:4px;padding:1px 5px;font
 <canvas id="c"></canvas>
 <div id="top">
   <span class="chip" id="cMap">🗺️ 0/4</span>
+  <span class="chip" id="cWr">☠️ 0/3</span>
   <span class="chip" id="cEco">🌿 0</span>
   <button class="chip" id="cJ">📖 Journal 0/27</button>
   <span class="chip" id="cZone">Florida Bay</span>
@@ -95,6 +96,8 @@ const SP={
  grouper:{n:'Goliath Grouper',e:'🐡',z:'Open Water',f:'It can grow to 8 feet and 800 pounds and loves shipwrecks. It was nearly fished out and has been protected in Florida since 1990.'},
  cuda:{n:'Great Barracuda',e:'⚡',z:'Open Water',f:'A lightning-fast hunter that can sprint at about 35 mph. It is curious about shiny things - give it room.'},
  moonjelly:{n:'Moon Jellyfish',e:'🌕',z:'Open Water',f:'Sea turtles love to eat jellyfish. A floating plastic bag looks just like one - a good reason to pick up trash.'},
+ reefshark:{n:'Caribbean Reef Shark',e:'🦈',z:'Open Water',f:'The most common shark on Caribbean reefs. As a top predator it keeps fish populations healthy. Shark bites on people are very rare - but give them space.'},
+ hammerhead:{n:'Great Hammerhead',e:'🔨',z:'Open Water',f:'Its wide head is packed with sensors that pick up the tiny electric signals of stingrays hiding under the sand - its favorite meal.'},
  deer:{n:'Key Deer',e:'🦌',z:'Islands',f:'The smallest deer in North America - about the size of a big dog. It lives only in the Florida Keys and is endangered.'},
  pelican:{n:'Brown Pelican',e:'🐦',z:'Islands',f:'It plunge-dives from the air to scoop up fish. It nearly vanished because of the pesticide DDT and bounced back after DDT was banned.'},
  heron:{n:'Great White Heron',e:'🪶',z:'Islands',f:'An all-white form of the great blue heron found almost only in South Florida and the Keys.'},
@@ -168,7 +171,17 @@ const SITES=[
  {id:'hole',name:'Blacktide\'s Hole',eco:'Blue Hole',icon:'❌',W:2000,D:900,drain:1.75,c1:'#2c8fc4',c2:'#020d20',floor:'#7c8794',
   intro:'A sinkhole in the sea floor, dark and deep. Your air goes faster down here. The treasure should be at the very bottom...'}
 ];
+const WRECKS=[
+ {id:'bonus',name:'Wreck of the Sea Witch',eco:'Pirate Shipwreck',icon:'☠️',W:2400,D:640,drain:1.35,c1:'#2a8fbd',c2:'#06304f',floor:'#948e74',hx:700,relic:'Captain Blacktide\'s brass spyglass',
+  intro:'A pirate sloop that ran onto the rocks in a storm. Reef sharks patrol the hull, so time your swim. Scoop up the gold doubloons and find the chest in the bow (right end).'},
+ {id:'bonus',name:'Wreck of the Crimson Gull',eco:'Pirate Shipwreck',icon:'☠️',W:2400,D:500,drain:1.3,c1:'#3fb0d2',c2:'#0d5a8c',floor:'#cbbd92',hx:800,relic:'the ship\'s bronze bell',
+  intro:'A shallow wreck on the back reef - her broken mast still pokes out of the water. Sharks cruise here too. Collect the doubloons and find the chest in the bow (right end).'},
+ {id:'bonus',name:'Wreck of the Iron Parrot',eco:'Pirate Shipwreck',icon:'☠️',W:2400,D:760,drain:1.5,c1:'#2380b0',c2:'#041f3a',floor:'#868a80',hx:750,locked:true,relic:'a strongbox of silver pieces of eight',
+  intro:'The deepest pirate wreck in the Keys, guarded by a great hammerhead. The chest is locked - the key is in the stern cabin (left end of the ship).'}
+];
 function placeSites(){
+ const q=[findTile(40,cyf(40)+15,t=>t===T.DEEP),findTile(86,cyf(86)+7,t=>t===T.REEF||t===T.SHAL),findTile(72,cyf(72)+18,t=>t===T.DEEP)];
+ WRECKS.forEach((w,i)=>{w.x=q[i].x;w.y=q[i].y});SITES[3].locked=true;
  const p=[
   findTile(26,24,(t,x,y)=>(t===T.SHAL||t===T.GRASS)&&nearType(x,y,T.MANG)),
   findTile(94,10,(t,x,y)=>t===T.GRASS&&!nearType(x,y,T.MANG)),
@@ -182,7 +195,7 @@ function placeSites(){
 let G;
 function newGame(){
  const st=findTile(55,cyf(55)-6,t=>t===T.SHAL||t===T.GRASS);
- G={mode:'surface',t:0,eco:0,found:{},pieces:0,stage:0,paused:true,hasKey:false,stats:{trash:0,lion:0,oops:0},
+ G={mode:'surface',t:0,eco:0,found:{},pieces:0,stage:0,paused:true,hasKey:false,stats:{trash:0,lion:0,oops:0,coins:0},
     boat:{x:st.x,y:st.y,vx:0,vy:0,a:-1.2,fan:0},wake:[],ents:[],dive:null,cool:0,cam:{x:0,y:0}};
  const R=rng(42);
  const put=(kind,sp,n,pred,o)=>{for(let i=0,k=0;i<n&&k<4000;k++){const tx=2+R()*(WX-4)|0,ty=3+R()*(WY-6)|0;if(pred(map[ty*WX+tx],tx,ty)){G.ents.push(Object.assign({kind,sp,x:(tx+.5)*TILE,y:(ty+.5)*TILE,x0:(tx+.5)*TILE,y0:(ty+.5)*TILE,ph:R()*9,a:R()*TAU},o||{}));i++}}};
@@ -190,6 +203,8 @@ function newGame(){
  put('dolphin','dolphin',5,t=>t===T.DEEP);
  put('dolphin','dolphin',2,(t,x,y)=>t===T.SHAL&&y<cyf(x)-8);
  put('turtle','turtle',5,t=>t===T.REEF);
+ put('fin','reefshark',7,t=>t===T.DEEP);
+ WRECKS.forEach(w=>{w.done=false;w.hasKey=false});SITES.forEach(w=>{w.hasKey=false});
  put('spoonbill','spoonbill',9,t=>t===T.MUD);
  put('heron','heron',8,(t,x,y)=>t===T.SAND&&nearType(x,y,T.SHAL));
  put('deer','deer',9,(t,x,y)=>t===T.HAM&&nearType(x,y,T.SAND));
@@ -199,10 +214,10 @@ function newGame(){
  hud();
 }
 function hud(){
- $('cMap').textContent='🗺️ '+Math.min(G.pieces,4)+'/4';$('cEco').textContent='🌿 '+G.eco;
+ $('cMap').textContent='🗺️ '+Math.min(G.pieces,4)+'/4';$('cEco').textContent='🌿 '+G.eco;$('cWr').textContent='☠️ '+WRECKS.filter(w=>w.done).length+'/'+WRECKS.length;
  $('cJ').textContent='📖 Journal '+Object.keys(G.found).length+'/'+NSP;
  const s=SITES[G.stage];
- $('goal').innerHTML=G.mode==='dive'?('<b>'+G.dive.site.name+'</b> · '+(G.dive.got?'Got it! Swim up to the surface.':G.dive.site.id==='wreck'&&!G.hasKey?'Find the key in the stern cabin (left end of the wreck).':G.dive.site.id==='hole'?'Dive to the bottom of the hole.':'Search for the hidden map piece.'))
+ $('goal').innerHTML=G.mode==='dive'?('<b>'+G.dive.site.name+'</b> · '+(G.dive.got?'Got it! Swim up to the surface.':G.dive.site.locked&&!G.dive.site.hasKey?'Find the key in the stern cabin (left end of the wreck).':G.dive.site.id==='hole'?'Dive to the bottom of the hole.':G.dive.site.id==='bonus'?'Collect doubloons and find the pirate chest in the bow (right end).':'Search for the hidden map piece.'))
    :('<b>Goal:</b> '+(G.stage===0?'Follow the arrow to the mangrove creek in the west of Florida Bay.':SITES[G.stage-1].next));
 }
 const TQ=[];let tBusy=0;
@@ -243,12 +258,12 @@ let pTxt='';function prompt_(t){if(t===pTxt)return;pTxt=t;const p=$('prompt');if
 /* ---------- surface update ---------- */
 function updSurface(dt){
  const b=G.boat,[ix,iy]=axis(),mag=Math.hypot(ix,iy),here=tileAt(b.x,b.y);
- if(mag>.15){const ta=Math.atan2(iy,ix);let da=ta-b.a;while(da>Math.PI)da-=TAU;while(da<-Math.PI)da+=TAU;b.a+=clamp(da,-3*dt,3*dt);
-  const th=Math.min(1,mag)*Math.max(.15,Math.cos(da))*(here===T.DEEP?.72:1);b.vx+=Math.cos(b.a)*270*th*dt;b.vy+=Math.sin(b.a)*270*th*dt;b.fan+=dt*(14+20*mag)}else b.fan+=dt*4;
- const dr=Math.pow(.36,dt);b.vx*=dr;b.vy*=dr;
+ const top=here===T.DEEP?175:235,kk=1-Math.pow(.002,dt);
+ if(mag>.15){const m=Math.min(1,mag);b.vx+=(ix/mag*m*top-b.vx)*kk;b.vy+=(iy/mag*m*top-b.vy)*kk;b.fan+=dt*(14+20*mag)}else{const st=Math.pow(.02,dt);b.vx*=st;b.vy*=st;b.fan+=dt*4}
+ if(Math.hypot(b.vx,b.vy)>25){let da=Math.atan2(b.vy,b.vx)-b.a;while(da>Math.PI)da-=TAU;while(da<-Math.PI)da+=TAU;b.a+=da*(1-Math.pow(.0005,dt))}
  let nx=b.x+b.vx*dt,ny=b.y+b.vy*dt;
- if(solid(tileAt(nx+Math.sign(b.vx)*13,b.y))||nx<20||nx>WW-20){b.vx*=-.25;nx=b.x}
- if(solid(tileAt(nx,ny+Math.sign(b.vy)*13))||ny<20||ny>WH-20){b.vy*=-.25;ny=b.y}
+ if(solid(tileAt(nx+Math.sign(b.vx)*10,b.y))||nx<20||nx>WW-20){b.vx=0;nx=b.x}
+ if(solid(tileAt(nx,ny+Math.sign(b.vy)*10))||ny<20||ny>WH-20){b.vy=0;ny=b.y}
  b.x=nx;b.y=ny;const sp=Math.hypot(b.vx,b.vy);
  if(sp>40&&Math.random()<dt*30)G.wake.push({x:b.x-Math.cos(b.a)*20+(Math.random()-.5)*10,y:b.y-Math.sin(b.a)*20+(Math.random()-.5)*10,l:1});
  for(const w of G.wake)w.l-=dt*.9;G.wake=G.wake.filter(w=>w.l>0);
@@ -264,7 +279,7 @@ function updSurface(dt){
   const d=Math.hypot(e.x-b.x,e.y-b.y);
   if(e.kind==='manatee'){e.x=e.x0+Math.sin(G.t*.12+e.ph)*26;e.y=e.y0+Math.cos(G.t*.09+e.ph)*20;e.a=Math.sin(G.t*.1+e.ph)*2;
    if(d<60&&sp>125)oops('Too fast near a manatee! Slow to idle speed around sea cows.',20)}
-  else if(e.kind==='dolphin'){e.a+=dt*.35;e.x=e.x0+Math.cos(e.a)*90;e.y=e.y0+Math.sin(e.a)*60}
+  else if(e.kind==='dolphin'||e.kind==='fin'){e.a+=dt*.35;e.x=e.x0+Math.cos(e.a)*90;e.y=e.y0+Math.sin(e.a)*60}
   else if(e.kind==='turtle'){e.x=e.x0+Math.sin(G.t*.1+e.ph)*50;e.y=e.y0+Math.cos(G.t*.13+e.ph)*40}
   else if(e.kind==='pelican'){e.x+=Math.cos(e.a)*70*dt;e.y+=Math.sin(e.a)*70*dt;e.a+=Math.sin(G.t*.2+e.ph)*dt*.3;if(e.x<-50)e.x=WW+40;if(e.x>WW+50)e.x=-40;if(e.y<-50)e.y=WH+40;if(e.y>WH+50)e.y=-40}
   if(d<(e.kind==='pelican'||e.kind==='deer'?150:120))discover(e.sp);
@@ -272,6 +287,7 @@ function updSurface(dt){
  // dive site
  const s=SITES[G.stage];let pr='';
  if(s&&Math.hypot(s.x-b.x,s.y-b.y)<75){pr='🤿 Drop anchor &amp; dive';if(actQ){b.vx=b.vy=0;startDive(s)}}
+ for(const w of WRECKS)if(G.mode==='surface'&&!w.done&&Math.hypot(w.x-b.x,w.y-b.y)<75){pr='☠️ Dive the pirate wreck';if(actQ){b.vx=b.vy=0;startDive(w)}}
  prompt_(pr);
 }
 
@@ -279,7 +295,7 @@ function updSurface(dt){
 function floorY(sc,x){const s=sc.site;let y=s.D-55-22*Math.sin(x/170+s.D)-12*Math.sin(x/53);
  if(s.id==='hole'){const k=clamp(1-Math.abs(x-1100)/470,0,1);y=300+18*Math.sin(x/90)+(s.D-360)*k*k*(3-2*k)}return y}
 function startDive(s){
- const R=rng(s.D*7+3),sc={site:s,x:160,y:36,vx:0,vy:0,face:1,air:100,inv:0,got:false,cr:[],trash:[],decor:[],coral:[],bub:[],chest:null,key:null,kick:0};
+ const R=rng(s.D*7+3),sc={site:s,x:160,y:36,vx:0,vy:0,face:1,air:100,inv:0,got:false,cr:[],trash:[],decor:[],coral:[],bub:[],chest:null,key:null,kick:0,coins:[]};
  const fy=x=>floorY(sc,x);
  const add=(kind,sp,x,y,o)=>sc.cr.push(Object.assign({kind,sp,x,y,x0:x,y0:y,dir:R()<.5?1:-1,t:R()*9,ph:R()*9,mv:'swim',spd:30,rng:120,bob:8,r:26,hz:0},o||{}));
  const junk=n=>{for(let i=0;i<n;i++){const x=300+R()*(s.W-500);sc.trash.push({x,y:fy(x)-14-R()*(s.id==='hole'?10:90),k:R()*3|0})}};
@@ -303,6 +319,7 @@ function startDive(s){
   for(let i=0;i<5;i++)add('fish','parrotfish',400+i*420,260+R()*200,{c1:'#2fbf9f',c2:'#e95d8f',L:42,Hh:19,spd:40,rng:200,r:0});
   for(let i=0;i<4;i++)add('fish','angelfish',600+i*450,200+R()*220,{c1:'#3b6fd6',c2:'#f5d33b',L:32,Hh:30,spd:28,r:0});
   for(let i=0;i<3;i++){const x=700+i*600;add('lion','lionfish',x,fy(x)-110-R()*60,{spd:14,rng:70,hz:1,r:26,net:1})}
+  add('gshark','reefshark',1300,300,{spd:65,rng:500,bob:24,hz:1,r:36});
   add('moray','moray',2150,fy(2150)-20,{mv:'still',hz:1,r:44});
   for(let i=0;i<2;i++){const x=900+i*800;add('lobster','lobster',x,fy(x)-10,{mv:'still',r:0})}
   add('turtle','turtle',1300,150,{spd:28,rng:400,bob:30,r:0});
@@ -311,12 +328,28 @@ function startDive(s){
   sc.decor.push({k:'hull',x:900,w:1200});
   for(let i=0;i<2;i++)add('cuda','cuda',1300+i*350,360+i*130,{spd:95,rng:300,bob:14,hz:1,r:34});
   add('shark','nurse',600,fy(600)-22,{mv:'still',r:0});
+  add('gshark','reefshark',1500,230,{spd:70,rng:450,bob:20,hz:1,r:36});
+  for(let i=0;i<8;i++){const x=1050+i*110+R()*40;sc.coins.push({x,y:fy(x)-30-R()*120})}
   add('fish','grouper',1650,fy(1650)-150,{c1:'#7c7a4a',c2:'#5d5b36',L:130,Hh:66,spd:8,rng:80,r:0,spots:1});
   for(let i=0;i<5;i++)add('jelly','moonjelly',500+i*440,180+R()*200,{mv:'drift',hz:1,r:26});
   for(let i=0;i<2;i++){const x=1150+i*650;add('lion','lionfish',x,fy(x)-170,{spd:12,rng:60,hz:1,r:26,net:1})}
   for(let i=0;i<4;i++)add('fish','snapper',1000+i*300,420+R()*120,{c1:'#a59588',c2:'#7c6a5e',L:26,Hh:11,school:6,spd:30,r:0});
   junk(4);sc.key={x:1010,y:fy(1010)-70};sc.chest={x:1960,y:fy(1960)-22,kind:'chest',locked:true};
+ }else if(s.id==='bonus'){
+  const hx=s.hx;sc.decor.push({k:'hull',x:hx,w:1200});
+  add('gshark','reefshark',hx+500,s.D*.38,{spd:70,rng:420,bob:20,hz:1,r:36});
+  add('gshark',s.locked?'hammerhead':'reefshark',hx+700,s.D*.62,{spd:55,rng:380,bob:16,hz:1,r:36,ham:s.locked?1:0});
+  add('cuda','cuda',hx+250,s.D*.5,{spd:90,rng:240,bob:14,hz:1,r:34});
+  add('shark','nurse',hx-260,fy(hx-260)-22,{mv:'still',r:0});
+  add('fish','grouper',hx+900,fy(hx+900)-150,{c1:'#7c7a4a',c2:'#5d5b36',L:130,Hh:66,spd:8,rng:80,r:0,spots:1});
+  for(let i=0;i<3;i++)add('jelly','moonjelly',300+i*800,150+R()*150,{mv:'drift',hz:1,r:26});
+  for(let i=0;i<2;i++){const x=hx+250+i*650;add('lion','lionfish',x,fy(x)-170,{spd:12,rng:60,hz:1,r:26,net:1})}
+  for(let i=0;i<3;i++)add('fish','snapper',hx+200+i*350,s.D*.55+R()*80,{c1:'#a59588',c2:'#7c6a5e',L:26,Hh:11,school:6,spd:30,r:0});
+  junk(3);for(let i=0;i<10;i++){const x=hx+130+i*100+R()*40;sc.coins.push({x,y:fy(x)-30-R()*130})}
+  if(s.locked)sc.key={x:hx+110,y:fy(hx+110)-70};
+  sc.chest={x:hx+1060,y:fy(hx+1060)-22,kind:'chest',locked:!!s.locked};
  }else{
+  add('gshark','hammerhead',1100,400,{spd:60,rng:300,bob:18,hz:1,r:36,ham:1});
   for(let i=0;i<8;i++)add('jelly','moonjelly',780+R()*640,330+i*62,{mv:'drift',hz:1,r:26});
   for(let i=0;i<2;i++)add('cuda','cuda',1100,480+i*190,{spd:85,rng:260,bob:16,hz:1,r:34});
   add('shark','nurse',1280,fy(1280)-20,{mv:'still',r:0});
@@ -330,11 +363,11 @@ function startDive(s){
  dlg('<h2>'+s.icon+' '+s.name+'</h2><p><b>Ecosystem: '+s.eco+'</b></p><p>'+s.intro+'</p><ul><li>Watch your <b>air</b> - swim back up to the surface before it runs out.</li><li>Grab <b>trash</b> to earn eco points. Net invasive <b>lionfish</b> with Space (from the side - mind the spines!).</li><li>Keep off the coral and away from stingers and teeth.</li></ul>','Dive in!');
 }
 function hurt(sc,from,msg){if(sc.inv>0)return;sc.inv=1.6;sc.air=Math.max(0,sc.air-13);const a=Math.atan2(sc.y-from.y,sc.x-from.x);sc.vx=Math.cos(a)*260;sc.vy=Math.sin(a)*260;toast('💥 '+msg+' You lose some air.',1,3200);sfx(140,.3,'square')}
-const HMSG={upjelly:'Stung by an upside-down jellyfish!',ray:'A startled stingray whips its tail!',lion:'Ouch - lionfish spines are venomous!',moray:'The moray eel snaps at you!',cuda:'A barracuda charges past!',jelly:'Stung by a moon jellyfish!'};
+const HMSG={gshark:'A shark bumps you to find out what you are!',upjelly:'Stung by an upside-down jellyfish!',ray:'A startled stingray whips its tail!',lion:'Ouch - lionfish spines are venomous!',moray:'The moray eel snaps at you!',cuda:'A barracuda charges past!',jelly:'Stung by a moon jellyfish!'};
 function endDive(msg){G.mode='surface';G.dive=null;$('mini').style.display='';$('airwrap').style.display='none';hud();prompt_('');if(msg)toast(msg)}
 function updDive(dt){
  const sc=G.dive,s=sc.site,[ix,iy]=axis();
- sc.vx+=ix*430*dt;sc.vy+=iy*430*dt;const dr=Math.pow(.12,dt);sc.vx*=dr;sc.vy*=dr;
+ const kd=1-Math.pow(.004,dt);sc.vx+=(ix*210-sc.vx)*kd;sc.vy+=(iy*210-sc.vy)*kd;
  sc.x=clamp(sc.x+sc.vx*dt,24,s.W-24);sc.y+=sc.vy*dt;
  const f=floorY(sc,sc.x)-16;if(sc.y>f){sc.y=f;sc.vy=Math.min(0,sc.vy)}if(sc.y<6){sc.y=6;sc.vy=0}
  if(Math.abs(sc.vx)>12)sc.face=sc.vx>0?1:-1;sc.kick+=dt*(3+Math.hypot(sc.vx,sc.vy)/22);
@@ -356,10 +389,11 @@ function updDive(dt){
   if((k.k==='elk'||k.k==='brain')&&d<k.r*.85+8){const a=Math.atan2(sc.y-cy,sc.x-k.x);sc.vx=Math.cos(a)*150;sc.vy=Math.sin(a)*150-30;oops('You bumped the coral! Coral is a living animal - even a touch can harm it.',15)}}
  if(s.id==='mangrove')discover('mangrove');if(s.id==='seagrass')discover('turtlegrass');
  sc.trash=sc.trash.filter(t=>{if(Math.hypot(t.x-sc.x,t.y-sc.y)<30){G.eco+=15;G.stats.trash++;toast('♻️ '+['Plastic bottle','Plastic bag','Tangled fishing line'][t.k]+' removed! +15'+(t.k===1?'<br><small>Turtles mistake floating bags for jellyfish.</small>':t.k===2?'<br><small>Lost fishing line can entangle turtles, birds and manatees.</small>':''),0,3000);sfx(700,.1,'triangle');hud();return false}return true});
- if(sc.key&&Math.hypot(sc.key.x-sc.x,sc.key.y-sc.y)<34){sc.key=null;G.hasKey=true;toast('🗝️ You found the captain\'s key! Now find the chest in the bow hold (right end of the wreck).');sfx(990,.2);hud()}
+ sc.coins=sc.coins.filter(c=>{if(Math.hypot(c.x-sc.x,c.y-sc.y)<28){G.eco+=5;G.stats.coins++;sfx(1200,.08,'triangle');hud();return false}return true});
+ if(sc.key&&Math.hypot(sc.key.x-sc.x,sc.key.y-sc.y)<34){sc.key=null;s.hasKey=true;toast('🗝️ You found the captain\'s key! Now find the chest in the bow hold (right end of the wreck).');sfx(990,.2);hud()}
  const ch=sc.chest,cd=ch?Math.hypot(ch.x-sc.x,ch.y-sc.y):1e9;let pr='';
  if(!sc.got&&cd<70){
-  if(ch.locked&&!G.hasKey){pr='';if(!sc.lockTip){sc.lockTip=1;toast('🔒 The chest is locked. Search the stern cabin at the other end of the wreck for a key.')}}
+  if(ch.locked&&!s.hasKey){pr='';if(!sc.lockTip){sc.lockTip=1;toast('🔒 The chest is locked. Search the stern cabin at the other end of the wreck for a key.')}}
   else{pr=ch.kind==='bottle'?'🍾 Open the old bottle':ch.kind==='hoard'?'💰 Open the treasure chest!':'🧰 Open the chest';if(actQ)openChest(sc)}
  }else if(near&&nd<80){pr='🥅 Net the lionfish';if(actQ){
    if((sc.x-near.x)*near.dir>-10&&nd<46){hurt(sc,near,HMSG.lion)}else{sc.cr.splice(sc.cr.indexOf(near),1);G.eco+=25;G.stats.lion++;toast('🥅 Lionfish removed! +25<br><small>Each one taken off the reef saves many young native fish.</small>',0,3600);sfx(600,.1);sfx(900,.2);hud()}}
@@ -368,13 +402,14 @@ function updDive(dt){
 }
 function openChest(sc){
  sc.got=true;const s=sc.site;sfx(660,.15);setTimeout(()=>sfx(880,.15),120);setTimeout(()=>sfx(1320,.3),240);
+ if(s.id==='bonus'){s.done=true;G.eco+=75;hud();dlg('<h2>☠️ Pirate relic found!</h2><p>The lid of the chest groans open. Inside: <b>'+s.relic+'</b>!</p><p>+75 points. Pirate wrecks explored: <b>'+WRECKS.filter(w=>w.done).length+' of '+WRECKS.length+'</b>. Swim back up to your airboat.</p>','Yo ho!');return}
  if(s.id==='hole'){G.eco+=100;G.pieces=5;win();return}
  G.pieces++;G.stage++;G.eco+=50;hud();
  dlg('<h2>🗺️ Map piece '+G.pieces+' of 4!</h2><div class="pieces">'+'🟫'.repeat(G.pieces)+'⬜'.repeat(4-G.pieces)+'</div><p>'+(s.id==='mangrove'?'Inside the barnacle-crusted bottle is a scrap of sailcloth, signed <b>B. Blacktide, 1733</b>.':s.id==='seagrass'?'Under the seat of the sunken skiff: an oilskin pouch with another scrap of the map.':s.id==='reef'?'A small iron-bound chest wedged in the reef holds the third piece.':'The captain\'s key turns with a clunk. Inside: the last piece!')+'</p><p class="clue">'+s.clue+'</p><p>+50 eco points. Swim back up to your airboat.</p>','Got it');
 }
 function win(){
  const n=Object.keys(G.found).length,rank=G.eco>=700?'🏆 Reef Guardian':G.eco>=450?'🥈 Keys Naturalist':'🥉 Treasure Hunter';
- dlg('<h1>💰 Treasure found!</h1><p>The lid creaks open on a heap of silver pieces of eight, emeralds and a golden compass - Captain Bonnie Blacktide\'s lost hoard, hidden since 1733.</p><p>But the real treasure of the Florida Keys is all around you: mangroves, seagrass, coral reef and open sea, each one depending on the others.</p><ul><li>Rank: <b>'+rank+'</b></li><li>Eco points: <b>'+G.eco+'</b></li><li>Species in journal: <b>'+n+' of '+NSP+'</b></li><li>Trash removed: <b>'+G.stats.trash+'</b> · Lionfish netted: <b>'+G.stats.lion+'</b></li><li>Oopses (coral bumps, speeding near manatees): <b>'+G.stats.oops+'</b></li></ul>','Play again',()=>{$('mini').style.display='';$('airwrap').style.display='none';newGame();intro()});
+ dlg('<h1>💰 Treasure found!</h1><p>The lid creaks open on a heap of silver pieces of eight, emeralds and a golden compass - Captain Bonnie Blacktide\'s lost hoard, hidden since 1733.</p><p>But the real treasure of the Florida Keys is all around you: mangroves, seagrass, coral reef and open sea, each one depending on the others.</p><ul><li>Rank: <b>'+rank+'</b></li><li>Eco points: <b>'+G.eco+'</b></li><li>Species in journal: <b>'+n+' of '+NSP+'</b></li><li>Trash removed: <b>'+G.stats.trash+'</b> · Lionfish netted: <b>'+G.stats.lion+'</b></li><li>Pirate wrecks explored: <b>'+WRECKS.filter(w=>w.done).length+' of '+WRECKS.length+'</b> · Doubloons: <b>'+G.stats.coins+'</b></li><li>Oopses (coral bumps, speeding near manatees): <b>'+G.stats.oops+'</b></li></ul>','Play again',()=>{$('mini').style.display='';$('airwrap').style.display='none';newGame();intro()});
 }
 
 /* ---------- drawing: creatures (origin at creature, facing +x) ---------- */
@@ -391,6 +426,12 @@ const DRAW={
  cuda(c){ctx.fillStyle='#8a98a3';const w=Math.sin(c.t*9)*4;ctx.beginPath();ctx.moveTo(-48,0);ctx.lineTo(-66,-12+w);ctx.lineTo(-66,12+w);ctx.fill();ctx.fillStyle='#b9c4cc';ctx.beginPath();ctx.moveTo(58,2);ctx.quadraticCurveTo(20,-12,-52,-3);ctx.lineTo(-52,4);ctx.quadraticCurveTo(20,11,58,2);ctx.fill();
    ctx.fillStyle='#55626c';for(let i=0;i<5;i++)dot(ctx,-30+i*13,3,2);ctx.fillStyle='#fff';dot(ctx,40,-2,2.6);ctx.fillStyle='#111';dot(ctx,41,-2,1.3);ctx.strokeStyle='#fff';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(44,4);ctx.lineTo(56,3);ctx.stroke()},
  shark(c){ctx.fillStyle='#a58c6a';ctx.beginPath();ctx.ellipse(0,0,66,15,0,0,TAU);ctx.fill();ctx.beginPath();ctx.moveTo(-58,0);ctx.lineTo(-96,-22);ctx.lineTo(-84,2);ctx.lineTo(-92,8);ctx.fill();ctx.beginPath();ctx.moveTo(-8,-12);ctx.lineTo(-22,-30);ctx.lineTo(-30,-11);ctx.fill();ctx.beginPath();ctx.moveTo(22,10);ctx.lineTo(6,26);ctx.lineTo(0,10);ctx.fill();ctx.fillStyle='#222';dot(ctx,52,-4,1.8)},
+ gshark(c){const w=Math.sin(c.t*5)*6;ctx.fillStyle='#6f7f8c';ctx.beginPath();ctx.moveTo(-58,0);ctx.lineTo(-92,-26+w);ctx.lineTo(-78,w*.4);ctx.lineTo(-88,16+w);ctx.fill();
+   ctx.beginPath();ctx.moveTo(-6,-12);ctx.lineTo(-18,-36);ctx.lineTo(-32,-10);ctx.fill();ctx.beginPath();ctx.moveTo(18,8);ctx.lineTo(0,30);ctx.lineTo(-6,8);ctx.fill();
+   ctx.beginPath();ctx.moveTo(74,0);ctx.quadraticCurveTo(30,-22,-62,-3);ctx.lineTo(-62,4);ctx.quadraticCurveTo(20,20,74,0);ctx.fill();
+   ctx.fillStyle='#dfe6ea';ctx.beginPath();ctx.moveTo(70,2);ctx.quadraticCurveTo(20,17,-50,4);ctx.quadraticCurveTo(20,8,70,2);ctx.fill();
+   if(c.ham){ctx.fillStyle='#6f7f8c';ctx.beginPath();ctx.roundRect(64,-17,12,34,5);ctx.fill()}
+   ctx.fillStyle='#111';dot(ctx,c.ham?70:52,c.ham?-12:-5,2);ctx.strokeStyle='#3d4a55';ctx.lineWidth=1.5;for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(30-i*5,-6);ctx.lineTo(29-i*5,4);ctx.stroke()}},
  moray(c){ctx.strokeStyle='#6f9a3a';ctx.lineWidth=15;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(-34,22);ctx.quadraticCurveTo(-30,-10+Math.sin(c.t*2)*4,2,-12+Math.sin(c.t*2)*5);ctx.stroke();ctx.fillStyle='#6f9a3a';ctx.beginPath();ctx.ellipse(10,-13+Math.sin(c.t*2)*5,13,8,0,0,TAU);ctx.fill();
    ctx.fillStyle='#3a1a1a';ctx.beginPath();ctx.moveTo(22,-12+Math.sin(c.t*2)*5);ctx.lineTo(10,-10);ctx.lineTo(21,-6-Math.abs(Math.sin(c.t*3))*-3);ctx.fill();ctx.fillStyle='#fff';dot(ctx,12,-17+Math.sin(c.t*2)*5,2.2);ctx.fillStyle='#111';dot(ctx,12.6,-17+Math.sin(c.t*2)*5,1.1);ctx.fillStyle='#4a4438';ctx.beginPath();ctx.ellipse(-36,24,20,9,0,0,TAU);ctx.fill()},
  jelly(c){const p=Math.sin(c.t*2.4);ctx.strokeStyle='rgba(255,220,240,.6)';ctx.lineWidth=1.5;for(let i=-3;i<=3;i++){ctx.beginPath();ctx.moveTo(i*5,2);ctx.quadraticCurveTo(i*5+Math.sin(c.t*3+i)*5,16,i*5,30+p*3);ctx.stroke()}
@@ -436,7 +477,7 @@ function drawDive(){
  for(const d of sc.decor)if(d.k==='ray'){const x=d.x+Math.sin(t*.3+d.x)*20+cx*.15;ctx.fillStyle='rgba(255,255,255,.055)';ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x+d.w,0);ctx.lineTo(x+d.w-140,s.D*.8);ctx.lineTo(x-170,s.D*.8);ctx.fill()}
  if(s.id==='mangrove'){ctx.fillStyle='#2b7447';for(let x=Math.floor(cx/60)*60-60;x<cx+vw+60;x+=60)dot(ctx,x+30*Math.sin(x),-30,46);
   ctx.lineCap='round';for(const d of sc.decor)if(d.k==='root'&&d.far&&vis(d.x)){ctx.strokeStyle='rgba(60,45,30,.45)';ctx.lineWidth=5;ctx.beginPath();ctx.moveTo(d.x,-10);ctx.quadraticCurveTo(d.x+d.w,150,d.x+d.w*1.6,floorY(sc,d.x));ctx.stroke()}}
- if(s.id==='wreck'){const h=sc.decor.find(d=>d.k==='hull'),x0=h.x,x1=h.x+h.w,fy=floorY(sc,x0+600)+6;
+ const hl=sc.decor.find(d=>d.k==='hull');if(hl){const h=hl,x0=h.x,x1=h.x+h.w,fy=floorY(sc,x0+600)+6;
   ctx.fillStyle='#3b2a1c';ctx.beginPath();ctx.moveTo(x0,fy-250);ctx.lineTo(x0+260,fy-250);ctx.lineTo(x0+270,fy-150);ctx.lineTo(x1-120,fy-165);ctx.quadraticCurveTo(x1+40,fy-150,x1+90,fy-230);ctx.quadraticCurveTo(x1+20,fy-20,x1-160,fy);ctx.lineTo(x0+60,fy);ctx.quadraticCurveTo(x0-20,fy-60,x0,fy-250);ctx.fill();
   ctx.fillStyle='#07182a';for(let i=0;i<3;i++){ctx.beginPath();ctx.roundRect(x0+50+i*70,fy-215,36,40,6);ctx.fill()}for(let i=0;i<5;i++)dot(ctx,x0+380+i*140,fy-95,15);
   ctx.strokeStyle='#52392a';ctx.lineWidth=7;for(let i=0;i<13;i++){const x=x0+90+i*88;ctx.beginPath();ctx.moveTo(x,fy);ctx.quadraticCurveTo(x-16,fy-80,x+4,fy-150);ctx.stroke()}
@@ -461,6 +502,7 @@ function drawDive(){
   else if(tr.k===1){ctx.fillStyle='rgba(255,255,255,.8)';ctx.beginPath();ctx.moveTo(-8,-9);ctx.lineTo(8,-9);ctx.lineTo(10,9);ctx.lineTo(0,6);ctx.lineTo(-10,9);ctx.fill()}
   else{ctx.strokeStyle='#d8f06a';ctx.lineWidth=1.5;ctx.beginPath();for(let a=0;a<12;a+=.4)ctx.lineTo(Math.cos(a*1.7)*a*.9,Math.sin(a*2.3)*a*.9);ctx.stroke()}
   ctx.restore()}
+ for(const c of sc.coins){ctx.fillStyle='#ffd34d';ctx.beginPath();ctx.ellipse(c.x,c.y+Math.sin(t*3+c.x)*2,7*Math.abs(Math.cos(t*2+c.x))+1.5,7,0,0,TAU);ctx.fill();ctx.strokeStyle='#b98a12';ctx.lineWidth=1.5;ctx.stroke()}
  if(sc.key){ctx.save();ctx.translate(sc.key.x,sc.key.y+Math.sin(t*2)*4);const gl=ctx.createRadialGradient(0,0,2,0,0,50);gl.addColorStop(0,'rgba(255,230,120,.6)');gl.addColorStop(1,'rgba(255,230,120,0)');ctx.fillStyle=gl;dot(ctx,0,0,50);ctx.strokeStyle='#ffd34d';ctx.lineWidth=4;ctx.beginPath();ctx.arc(-8,0,6,0,TAU);ctx.moveTo(-2,0);ctx.lineTo(14,0);ctx.moveTo(9,0);ctx.lineTo(9,6);ctx.moveTo(14,0);ctx.lineTo(14,6);ctx.stroke();ctx.restore()}
  if(sc.chest)chestDraw(sc.chest,sc.got);
  for(const c of sc.cr){if(!vis(c.x))continue;ctx.save();ctx.translate(c.x,c.y);if(c.dir<0)ctx.scale(-1,1);DRAW[c.kind](c);ctx.restore()}
@@ -483,6 +525,7 @@ const TOP={
  spoonbill(e){ctx.fillStyle='rgba(0,0,0,.15)';ctx.beginPath();ctx.ellipse(3,5,9,4,0,0,TAU);ctx.fill();ctx.fillStyle='#f58fb0';ctx.beginPath();ctx.ellipse(0,0,9,6,e.ph,0,TAU);ctx.fill();ctx.fillStyle='#fff';dot(ctx,7,-5,3.5);ctx.strokeStyle='#9aa08a';ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(9,-6);ctx.lineTo(17,-8+Math.sin(G.t*4+e.ph)*3);ctx.stroke()},
  heron(e){ctx.fillStyle='rgba(0,0,0,.15)';ctx.beginPath();ctx.ellipse(3,5,8,4,0,0,TAU);ctx.fill();ctx.fillStyle='#fff';ctx.beginPath();ctx.ellipse(0,0,8,5,e.ph,0,TAU);ctx.fill();dot(ctx,6,-6,3);ctx.strokeStyle='#e9b44c';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(8,-7);ctx.lineTo(16,-10);ctx.stroke()},
  deer(e){ctx.rotate(e.ph);ctx.fillStyle='rgba(0,0,0,.15)';ctx.beginPath();ctx.ellipse(2,4,11,5,0,0,TAU);ctx.fill();ctx.fillStyle='#a8743f';ctx.beginPath();ctx.ellipse(0,0,10,5,0,0,TAU);ctx.fill();dot(ctx,11,0,4);ctx.fillStyle='#fff';dot(ctx,-10,0,2.4);ctx.fillStyle='#6b4a2a';ctx.beginPath();ctx.ellipse(11,-4,1.6,3.5,.5,0,TAU);ctx.fill();ctx.beginPath();ctx.ellipse(11,4,1.6,3.5,-.5,0,TAU);ctx.fill()},
+ fin(e){ctx.rotate(e.a+Math.PI/2);ctx.globalAlpha=.35;ctx.fillStyle='#39505f';ctx.beginPath();ctx.ellipse(0,0,26,7,0,0,TAU);ctx.fill();ctx.globalAlpha=1;ctx.fillStyle='#4b5f6d';ctx.beginPath();ctx.moveTo(8,0);ctx.lineTo(-6,-3);ctx.lineTo(-10,-14);ctx.fill();ctx.strokeStyle='rgba(255,255,255,.6)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(-8,3);ctx.lineTo(-28,7);ctx.stroke()},
  croc(e){ctx.rotate(e.a);ctx.fillStyle='#4f6236';ctx.beginPath();ctx.ellipse(0,0,17,5,0,0,TAU);ctx.fill();ctx.beginPath();ctx.moveTo(14,-4);ctx.lineTo(30,-1.5);ctx.lineTo(30,1.5);ctx.lineTo(14,4);ctx.fill();ctx.beginPath();ctx.moveTo(-14,-3);ctx.lineTo(-34,Math.sin(G.t+e.ph)*4);ctx.lineTo(-14,3);ctx.fill();ctx.fillStyle='#e8d94a';dot(ctx,15,-3,1.3);dot(ctx,15,3,1.3)}
 };
 function drawBoat(b){ctx.save();ctx.translate(b.x,b.y);ctx.rotate(b.a);
@@ -508,6 +551,7 @@ function drawSurface(){
   ctx.fillStyle=done?'#7a8':'#e0291f';ctx.fillRect(0,-34,24,16);ctx.strokeStyle='#fff';ctx.lineWidth=4;ctx.beginPath();if(done){ctx.moveTo(5,-26);ctx.lineTo(10,-21);ctx.lineTo(19,-31)}else{ctx.moveTo(1,-33);ctx.lineTo(23,-19)}ctx.stroke();
   if(i===4&&!done){ctx.fillStyle='#e0291f';ctx.font='bold 34px Georgia';ctx.textAlign='center';ctx.fillText('✕',0,34)}
   ctx.restore()});
+ for(const w of WRECKS){ctx.save();ctx.translate(w.x,w.y+Math.sin(t*2+w.x)*2);ctx.fillStyle=w.done?'#9aa':'#222';dot(ctx,0,0,8);ctx.strokeStyle='#333';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(0,-34);ctx.stroke();ctx.fillStyle=w.done?'#7a8':'#111';ctx.fillRect(0,-36,26,18);ctx.font='13px serif';ctx.textAlign='center';ctx.fillStyle='#fff';ctx.fillText(w.done?'✓':'☠',13,-22);ctx.restore()}
  for(const w of G.wake){ctx.fillStyle='rgba(255,255,255,'+w.l*.55+')';dot(ctx,w.x,w.y,3+(1-w.l)*7)}
  drawBoat(b);
  for(const e of G.ents)if(e.kind==='pelican'&&vis(e)){ctx.save();ctx.translate(e.x,e.y);TOP.pelican(e);ctx.restore()}
@@ -518,6 +562,7 @@ function drawSurface(){
  // minimap
  const m=$('mini'),mg=m.getContext('2d'),k=m.width/WW;mg.drawImage(wc,0,0,m.width,m.height);
  SITES.forEach((q,i)=>{if(i>G.stage)return;mg.fillStyle=i<G.stage?'#9f9':'#ff3b2a';mg.strokeStyle='#fff';mg.lineWidth=2;mg.beginPath();mg.arc(q.x*k,q.y*k,i===G.stage?6+Math.sin(t*4)*2:4,0,TAU);mg.fill();mg.stroke()});
+ for(const w of WRECKS){mg.fillStyle=w.done?'#9f9':'#111';mg.strokeStyle='#fff';mg.lineWidth=2;mg.beginPath();mg.arc(w.x*k,w.y*k,4.5,0,TAU);mg.fill();mg.stroke()}
  mg.fillStyle='#ffd34d';mg.strokeStyle='#000';mg.lineWidth=2;mg.beginPath();mg.arc(b.x*k,b.y*k,5,0,TAU);mg.fill();mg.stroke();
 }
 function drawJoy(){if(joy.id===null)return;ctx.setTransform(DPR,0,0,DPR,0,0);ctx.fillStyle='rgba(255,255,255,.18)';dot(ctx,joy.bx,joy.by,56);ctx.fillStyle='rgba(255,255,255,.5)';dot(ctx,joy.bx+joy.x*56,joy.by+joy.y*56,24)}
@@ -532,10 +577,10 @@ function frame(ts){
  drawJoy();requestAnimationFrame(frame);
 }
 function intro(){
- dlg('<h1>🏝️ Keys Treasure Quest</h1><p>In 1733 the pirate captain <b>Bonnie Blacktide</b> tore her treasure map into four pieces and hid them across the <b>Florida Keys</b> - in the mangroves, the seagrass, the coral reef and a sunken galleon.</p><p>Skim the shallows in your <b>airboat</b>, <b>scuba dive</b> at each flagged site, and piece the map together. Along the way, fill your field journal with the wildlife of each ecosystem and leave the Keys cleaner than you found them.</p><ul><li><b>Steer / swim:</b> <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrow keys - or drag anywhere on a touch screen</li><li><b>Action:</b> <kbd>Space</kbd> or tap the yellow button</li><li><b>Journal:</b> <kbd>J</kbd></li><li>Slow down inside the dashed rings - manatees!</li></ul><p class="clue">An old conch fisherman whispers: "Start where the trees walk on water, out west in the bay."</p>','Cast off!');
+ dlg('<h1>🏝️ Keys Treasure Quest</h1><p>In 1733 the pirate captain <b>Bonnie Blacktide</b> tore her treasure map into four pieces and hid them across the <b>Florida Keys</b> - in the mangroves, the seagrass, the coral reef and a sunken galleon.</p><p>Skim the shallows in your <b>airboat</b>, <b>scuba dive</b> at each flagged site, and piece the map together. Along the way, fill your field journal with the wildlife of each ecosystem and leave the Keys cleaner than you found them.</p><ul><li><b>Steer / swim:</b> <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrow keys - or drag anywhere on a touch screen</li><li><b>Action:</b> <kbd>Space</kbd> or tap the yellow button</li><li><b>Journal:</b> <kbd>J</kbd></li><li>Slow down inside the dashed rings - manatees!</li><li><b>Bonus:</b> three pirate shipwrecks (black ☠ flags, black dots on the map) hold relics and doubloons - but sharks guard them.</li></ul><p class="clue">An old conch fisherman whispers: "Start where the trees walk on water, out west in the bay."</p>','Cast off!');
 }
 genWorld();placeSites();paintWorld();newGame();intro();requestAnimationFrame(frame);
-window.__game={get G(){return G},SITES,startDive};
+window.__game={get G(){return G},SITES,WRECKS,startDive};
 </script>
 </body>
 </html>
