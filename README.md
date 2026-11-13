@@ -6,4 +6,6 @@ Open `index.html` in a browser to play (it needs `game.js` and `three.min.js` be
 
 Controls: A/D or left/right to steer and W/S or up/down for throttle and brake (or drag on a touch screen), Space for actions, M for the map, J for the journal, C for the treasure clues, V to switch between the chase camera and a top-down view.
 
+The game simulates wind (shifting trade winds with gusts), wind-driven ocean waves that flatten over shallow water, buoyancy, thrust and drag on the airboat, square-rig sailing for the pirate ships, and underwater pressure, wave surge and light absorption.
+
 Built with JavaScript and [Three.js](https://threejs.org) (MIT licence, see `three.LICENSE`).
